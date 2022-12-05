@@ -91,6 +91,12 @@ int main()
     // PEMDAS - Parenthesis, Exponents, Multiplication, Division, Addition, Subtraction
     // (Please execuse my dear aunt Sally)
 
+    // 1.10 - Exressions
+    // Sets of literal, variables, operators, function calls, that evaluate to a single value
+    // type identifier { expression };
+    // Also 'x = 5' - expression; 'x = 5;' - expression statement
+    // An expression whose result is discarded - discarded-value expression
+
     return 0;
 }
 
