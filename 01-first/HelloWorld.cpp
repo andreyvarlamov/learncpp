@@ -84,6 +84,13 @@ int main()
     //     + 5 + 6
     //     * 7 * 8;
 
+    // 1.9 - Literals and operators
+    // std::cout << "Hello world!"; int x { 5 };
+    // literals ----^^^^^^^^^^^^^^----------^
+    // Chaining operators
+    // PEMDAS - Parenthesis, Exponents, Multiplication, Division, Addition, Subtraction
+    // (Please execuse my dear aunt Sally)
+
     return 0;
 }
 
