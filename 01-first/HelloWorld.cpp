@@ -77,6 +77,13 @@ int main()
     // iostream does not provide a way to accept keyboard input without the user having to
     // press ENTER. For console, use pdcurses, FXTUI, or cpp-terminal
 
+    // 1.8 - Whitespace and basic formatting
+    // If splitting a long line on the operator, the operator should be at the beginning
+    // of the next line; not at the end of the current line
+    // std::cout << 3 + 4
+    //     + 5 + 6
+    //     * 7 * 8;
+
     return 0;
 }
 
