@@ -28,7 +28,7 @@
 
 int getValueFromUser()
 {
-    std:: << "Enter on integer: ";
+    std::cout << "Enter on integer: ";
     int input {};
     std::cin >> input;
 
