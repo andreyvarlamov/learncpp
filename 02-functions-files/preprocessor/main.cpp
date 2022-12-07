@@ -52,3 +52,36 @@ int main()
 //
 //
 // Object-like macros without substituion text
+// Will also substitute with nothing, but it's not its purpose
+// Generally accepted to use
+//
+// Conditional compilation
+// # include <iostream>
+//
+// #define PRINT_JOE
+//
+// int main()
+// {
+// #ifdef PRINT_JOE
+//     std::cout << "Joe\n"; // will be compiled
+// #endif
+//
+// #ifdef PRINT_BOB
+//     std::cout << "Bob\n"; // will be ignored
+// #endif
+//
+// #ifndef PRINT_JOB
+//     std::cout << "Job\n"; // will be compiled
+// #endif
+//
+// #if 0
+//     std::cout << "Nothing\n"; // will always be excluded
+// #endif
+//
+//     return 0;
+// }
+//
+// Object-like macros don't affect other preprocessor directives
+//
+// Scope of defines: directives are resolved before compilation, from top to bottom,
+// on a file-by-file basis, regardless of C++ syntax
