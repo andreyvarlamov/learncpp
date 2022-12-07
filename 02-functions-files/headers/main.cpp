@@ -82,3 +82,55 @@ int main()
 // library or standard library header, it's more likely to cause a compile error so you
 // can fix it.
 
+// 2.12 - Header guards
+// Duplicated definitions throw a compile error.
+// For example:
+// square.h:
+//int get SquareSides() // should not include function definitions, but will for the sake of example
+//{
+//    return 4;
+//}
+
+// geometry.h:
+//#include "square.h"
+
+// main.cpp:
+//#include "square.h"
+//#include "geometry.h"
+//
+//int main()
+//{
+//    return 0;
+//}
+
+// After preprocessor runs, result:
+//int getSquareSides()
+//{
+//    return 4;
+//int getSquareSides()
+//{
+//    return 4;
+//}
+//int main()
+//{
+//    return 0;
+//}
+
+// Header guards:
+//#ifndef UNIQUE_NAME
+//#define UNIQUE_NAME
+//
+// declarations (and certain types of definitions) here
+//
+//#endif
+// Convention for the name: square.h -> SQUARE_H
+
+// We can't avoid definitions in header files. Non-function definitions. E.g. user-defined
+// types are typically defined in header files, so the type definitions can be propagated
+// out to the code fiels that need to use them. Without a header guard, a code file could
+// end up with multiple (identical) copies of a given type definitions.
+
+// Modern compilers - #pragma once
+// But it is not an official part of the C++ language (and probably will never be, because
+// it can't be implemented in a way that works reliably in all cases).
+// For maximum compatibility, traditional header guards are recommended
