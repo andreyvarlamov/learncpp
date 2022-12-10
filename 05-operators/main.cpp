@@ -342,3 +342,4 @@ int main()
 // ||           or
 // !            not
 // E.g.: not a and (b or c)
+// Recommended to use symbolic names though.
