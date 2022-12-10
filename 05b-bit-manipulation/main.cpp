@@ -82,3 +82,52 @@ int main()
 // Bitwise XOR: 0110 ^ 0011 is 0101
 
 // Bitwise assignment operators: <<=, >>=, |=, &=, ^=
+
+
+
+// O.3 - Bit manipulation with bitwise operators and bit masks
+// Let's take a look at how bitwise operators are more commonly used
+
+// Bit masks
+// A bit mask blocks the bitwise operators from touching bits we don't want modified, and
+// allows access to the ones we do want modified.
+
+// C++14 supports binary literals; pre C++14, would need to use hex literals
+// Or shift them into place.
+
+// See bit-masks.cpp
+
+// std::bitset supports the full set of bitwise operators, so can still use masks.
+// Unlike std::bitset functions, masks allow to modify multiple bits at once.
+
+// A best practice is to give bit masks useful names as a way to document the meaning of
+// the bit flags. E.g. mask1 -> isHungry
+
+// When is it useful?
+// 8 booleans would normally take 8 bytes. But the above example would use 9 bytes
+// (8 bytes to define the bit masks, and 1 byte for the flag variable)
+// But this is useful if there are many identical flag variables.
+// E.g. 8 flags for 100 entities: 8 bytes for the masks and 100 bytes for 100 entity flag
+// sets = 108 bytes total; instead of 800 bytes total for 8 bools for each of the 100
+// entities
+
+// Another case: if you had a function that could take any combination of 32 different
+// paremeters. Would be very long function call with individual bools
+// E.g. void some_function(std::bitset<32> options);
+// some_function(option10 | option32);
+// OpenGL opted to use bit flag parameters instead of many consecutive bool parameters
+// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the color and the depth buffer
+// In gl2.h:
+// #define GL_DEPTH_BUFFER_BIT      0x00000100
+// #define GL_STENCIL_BUFFER_BIT    0x00000400
+// #define GL_COLOR_BUFFER_BIT      0x00004000
+
+// Bit masks involving multiple bits
+// For color display devices, the amount of R, G and B for a given pixel is represented
+// by an 8-bit unsigned integer. When assigning color values to a pixel, in addition to
+// those 3, a 4th value called is often used. Alpha - how transparent the color is.
+// masks    0xFF000000 - red bits - 32 bits
+//          0x00FF0000 - green bits
+//          ...
+// Isolate red value and right shift into the lower 8 bits, then cast to uint8_t:
+// std::uint8_t red { static_cast<std::uint8_t>((pixel * red_bits) >> 24) };
