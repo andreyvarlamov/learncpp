@@ -1,0 +1,2 @@
+# gcc 9
+g++ main.cpp -o main.out -std=c++2a -g -pedantic-errors -Wall -Weffc++ -Wsign-conversion -Wextra -Werror
