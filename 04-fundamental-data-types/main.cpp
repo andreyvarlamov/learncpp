@@ -335,3 +335,50 @@ int main()
 // char16_t and char32_t were added to C++11 to provide explicit support for 16-bit and
 // 32-bit Unicode characters
 // char8_t has been added in C++20
+
+// 4.12 - Introduction to type conversion and static_type
+// Type conversion
+// Implicit type conversion - when the compiler does type conversion on our behalf.
+
+// Type conversion produces a new value
+
+// A few cases where implicit type conversion is not sufficient
+// E.g. passing a double to a function that accepts int
+// Will generate a warning about possible loss of data
+// -> Unsafe implicit conversion
+
+// Explicit type conversion via static_cast operator
+// static_cast<new_type>(expression)
+// Can static cast double to int, that will not generate a warning
+// Can static cast char to int
+// Can static cast unsigned numbers to signed numbers
+//      Does not do any range checking. unsigned int -> unpredictable results if
+//      the value of the unsigned int is greater than the maximum value a signed int can hold.
+
+// (Repeat) std::int8_t and std::uint8_t behave like chars in most compilers
+// E.g. when doing std::cout
+// Can static cast to int to output as a number
+
+// 4.13 - Const variables and symbolic constants
+// const double gravity { 9.8 };
+// must be initialized
+
+// Naming convention
+// Programmers who have transitioned from C often prefer underscored, upper-case names for
+// const variables (e.g. EARTH_GRAVITY). More common in C++ is to use intercapped names
+// with a 'k' prefix (e.g. kEarthGravity)
+// But because const variables act like normal variables (except they can not be assigned
+// to), there is no reason that they need a special naming convention. For this reason,
+// this guide suggests to use the same naming convention as for non-const variables
+
+// Function params can be made constant, e.g. void printInt(const int x)
+// But when arguments are passed by value, there's usually no reason to make them const,
+// because we don't care if the function changes the original value.
+
+// A function's return value may also be made coonst
+// However, since the returned value is a copy, there's little point in making it const.
+// It can also impede certain kinds of compiler optimizations.
+
+// For symbolic constants, prefer constant variables to object-like macros.
+// Harder to debug.
+// Macros can have naming conflicts.
