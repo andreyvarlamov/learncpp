@@ -217,3 +217,52 @@ int main()
 
 // In general problems can be all avoided by ensuring that any variable that has a
 // side-effect applied is used no more than once in a given statement.
+
+// 5.5 - Comma and conditional operators
+// x, y - Evaluate x then y, return the value of y
+//#include <iostream>
+//
+//int main()
+//{
+//    int x { 1 };
+//    int y { 2 };
+//
+//    std::cout << (++x, ++y) << '\n'; // increment x and y, evaluates to the right operand
+//
+//    return 0;
+//}
+// Because of low precedence, these 2 lines do different things
+// z = (a, b); // Evaluate (a, b) first to get result of b, then assign that value to variable z
+// z = a, b; // z gets assigned the value of a, and b is evaluated and discarded. "(z = a), b"
+
+// Best practice: avoid using the comma operator, except within for loops.
+
+// Comma as a separator
+// In C++, the comma symbol is often used as a separator, and these uses do not invoke the
+// comma operator.
+
+// Conditional operator
+// c ? x : y - if c is nonzero (true) then evaluate x, otherwise evaluate y
+// "arithmetic if"
+
+// Parenthesization of the conditional operator.
+// Common convetntion to put the conditional part of the operation inside the parameters.
+// The other operands evaluate as if they were parenthesized, so explicit parenthesization
+// is not required for those.
+// ?: has very low precedence, so if doing anything other than assigning the result to a
+// variable, the whole ?: operator needs to be wrapped in parentheses.
+// E.g.
+// std::cout << (x > y) ? x : y << '\n'; // -> (std::cout << (x > y)) ? x : y << '\n';
+// std::cout << ((x > y) ? x : y ) << '\n';
+
+// The conditional operator evaluates as an expression
+// So the conditional operator can be used in some places where if/else can not.
+// E.g. when initializing a constant variable
+// constexpr int classSize { inBigClassRoom ? 30 : 20 };
+// No satisfactory if/else statement for this
+// the only way if using if/else, would be to pull the check into a separate function
+
+// The type of the expressions must match or be convertible
+
+// Best practice is to only use the conditional operator for simple conditionals where
+// you use the result and where it enhances readability
