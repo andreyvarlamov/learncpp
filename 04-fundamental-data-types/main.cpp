@@ -438,3 +438,108 @@ int main()
 // Can't format as a binary, but there's a type in C++ std library - std::bitset
 // std::bitset<8> bin1 { 0b1100'0101 }; std::cout << bin1 << '\n';
 // Number of bits must be a compile-time constant
+
+// 4.17 - Introduction to std::string
+// Strings are not a fundamental type in C++ for historical reasons
+// They have a strange, complicated type that is hard to work with that will be covered later.
+// Double-quoted strings - "C-style strings"
+
+// C++ has introduced two additional string types into the language that are much easier
+// and safer to work with: std::string and std::string_view (C++17). They are not
+// fundamental types.
+
+// Work with strings and string objects - <string> header
+// std::string name {};
+
+// Using string swith std::cin may yield some surprises: std::cin breaks on whitespace
+// Use std::getline() to input text - two arguments: std::cin and the string variable
+// std::cout << "Enter your full name: ";
+// std::string name();
+// std::getline(std::cin >> std::ws, name);
+// std::ws - input manipulator - ignore any leading whitespace before extraction.
+// Without it, the \n from the previous command will be read and getline will get an empty
+// string
+// E.g. when getting value first, then string: when you type 2 and hit enter, std::cin
+// captures the string"2\n" as input, then extracts the value 2, but leaves the newline
+// character behind for later. Then, when std::getline() goes to extract text to name, it
+// sees "\n" already waiting in std::cin, and figures we must have previously entered an
+// empty string.
+// On the other hand, the extraction operator >> with std::cin ignores leading whitespace
+
+// String length
+// std::string name { "Andrey" };
+// name.length() - (member function)
+// std::string::length()
+// Returns an unsigned integral value (most likely of type size_t)
+// If you want to assign it to int, you should static_cast to avoid compiler warnings
+// about signed/unsigned conversions:
+// int length { static_cast<int>(name.length()) };
+// In C++20, can also use std::ssize to get the length of a std::string as a signed
+// integer:
+// std::ssize(name)
+
+// std::string is expensive to initialize and copy
+// Whever a std::string is initialized, a copy of the string used to initialized it is made.
+// And whenever a std::string is passed by value to a std::string parameter, another copy
+// is made. These copies are expensive, and should be avoided if possible.
+// Use std::string_view instead
+
+// Literals for std::string
+// Double-quoted string literals are C-style strings by default (the "strange" type)
+// Can add an s and sv suffixes
+//#include <iostream>
+//#include <string>
+//#include <string_view>
+//
+//int main()
+//{
+//    using namespace std::literals;
+//
+//    std::cout << "foo\n"; // C-style string literal
+//    std::cout << "goo\n"s; // std::string literal
+//    std::cout << "moo\n"sv; // std::string_view literal
+//
+//    return 0;
+//}
+// The "s" suffix lives in the namespace std::literals:string_literals. The easiest way
+// to access the literal suffixes is via using directive using namespace std::literals.
+// This is one of the exception cases where using an entire namespace is ok, because the
+// suffixes defined within are unlikely to collide with any of your code.
+// Probably won't be using these very often - it's fine to initialize a std::string object
+// with a C-style string literal. But there are a few cases where it makes things
+// easier.
+
+// constexpr std::string isn't supported in C++17 or earlier, and only has minimal support
+// in C++20. If you need constexpr strings, use std::string_view instead.
+
+// 4.18 - Introduction to std::string_view
+// Initializing (or copying) a std::string is slow.
+// C++17 - std::string_view - <string_view> header
+// Provides read-only access to an existing string without making a copy.
+//#include <iostream>
+//#include <string_view>
+//
+//void printSV(std::string_view str)
+//{
+//    std::cout << str << '\n';
+//}
+//
+//int main()
+//{
+//    std::string_view s { "Hello, world!" };
+//    printSV(s);
+//
+//    return 0;
+//}
+// In this program, no copies of the string are made.
+// Best practice is to prefer std::string_view over std::string when you need a read-only
+// string, especially for function parameters.
+
+// Full support for constexpr std::string_view
+
+// Converting a std::string to a std::string_view. A std::string_view can be created using
+// a std::string initializer, and a std::string will implicitly convert to a std::string_view.
+// C++ won't allow implicit conversion of a std::string_view to a std::string, but can convert
+// using a static_cast: static_cast<std::string>(sv)
+// Returning a std::string_view from a function is usually a bad idea. Will be explained in
+// 11.7
