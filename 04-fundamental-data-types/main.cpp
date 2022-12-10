@@ -291,3 +291,47 @@ int main()
 // By default accepts only 0 or 1, anything else -> silently fail
 // To allow to accept "false" and "true", set std::cin >> std::boolapha;
 // With it enabled, 0 and 1 will no longer be treated as booleans
+
+// 4.10 - Introduction to if statements
+// Expression that does not evaluate to a Boolean value gets converted
+// if (4) - true
+
+// 4.11 - Chars
+// Integral type
+// The integer stored by a char variable is interpreted as an ASCII character
+// American Standard Code for Information Interchange
+// Between numbers 0 and 127 (ASCII code or code point)
+// Codes 0-31 - unprintable chars, obsolete
+
+// std::cin - can input many chars, but if extracted into char, will hold only the first one
+// Always 1 byte in size
+
+// Escape sequences:
+// Name                 Symbol      Meaning
+// Alert                \a          Makes an alert, such as a beep
+// Backspace            \b          Moves the cursor back one space
+// Formfeed             \f          Moves the cursor to the next logical page
+// Newline              \n          Moves cursor to next line
+// Carriage return      \r          Moves cursor to beginning of line
+// Horizontal tab       \t          Prints a horizontal tab
+// Vertical tab         \v          Prints a vertical tab
+// Signle quote         \'          Prints a single quote
+// Double quote         \"          Prints a double quote
+// Question mark        \?          Prints a question mark
+//                                      No longer relevant. Can use unescaped.
+// Octal number         \(number)   Translates into char represented by octal
+// Hex number           \x(number)  Translates into char represented by hex number
+
+
+// Best practice is to always put stand-alone chars in single quotes. This helps
+// compiler optimize more effectively.
+
+// Avoid multicharacter literals (e.g. '56')
+// For backwards compatibility reasons, not part of the C++ standard
+
+// Other char types
+// wchar_t should be avoided in almost all cases (except when interfacing with the
+// Windows API). Has largely been deprecated.
+// char16_t and char32_t were added to C++11 to provide explicit support for 16-bit and
+// 32-bit Unicode characters
+// char8_t has been added in C++20
