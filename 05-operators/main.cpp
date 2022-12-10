@@ -157,3 +157,63 @@ int main()
 // Warning: in the vast majority of cases, integer exponentiation will overflow the
 // integral type. This is likely why such a function wasn't included in the std library
 // in the first place
+
+// 5.4 - Increment/decrement operators, and side effects
+// Operator                                 Symbol  Form    Operation
+// Prefix increment (pre-increment)         ++      ++x     Increment x, then return x
+// Prefix decrement (pre-decrement)         --      --x     Decrement x, then return x
+// Postfix increment (post-increment)       ++      x++     Copy x, then increment x, then return the copy
+// Postfix decrement (post-decrement)       --      x--     Copy x, then decrement x, then return the copy
+
+// With postfix, the operand is copied, then the operand itself (not the copy) is decremented.
+// Then, the copy (not the original) is evaluated
+//#include <iostream>
+//
+//int main()
+//{
+//    int x { 5 };
+//    int y = x++; // x is incremented to 6; copy of the original x is evaluated to the value 5;
+//                 // and 5 is assigned to y
+//
+//    std::cout << x << ' ' << y << '\n'; // Output: 6 5
+//    return 0;
+//}
+// The postfix version takes a lot more steps, and thus may not be as performant as the
+// prefix version
+// Best practice is to strongly favor the prefix version
+
+// Side effects
+// A function or expression is said to have a side effect if it does anything that persists
+// beyond the life of the function or expression itself.
+// x = 5; // even after the statement has finished executing x will still have the value of 5
+// ++x // the value of x is altered even after the statement has finished evaluating
+// std::cout << x; // The outputing of x also has the side effect of modifying the state of
+// the console
+
+// However they can lead to unexpected results
+//# include <iostream>
+//
+//int add(int x, int y)
+//{
+//    return x + y;
+//}
+//
+//int main()
+//{
+//    int x { 5 };
+//    int value { add(x, ++x) }; // 5 + 5 or 6 + 6?
+//                               // Depends on what order the compiler evaluates the function
+//                               // arguments in
+//
+//    std::cout << value << '\n'; // value could be 11 or 12
+//    return 0;
+//}
+// The C++ standard does not define the order in which function arguments are evaluated
+// In the example above, this is only a problem because one of the arguments to function
+// add() has a side effect.
+
+// The C++ standard does that intentionally, so that compilers can do whatever is most
+// natural (and thus most performant) for a given architecture.
+
+// In general problems can be all avoided by ensuring that any variable that has a
+// side-effect applied is used no more than once in a given statement.
