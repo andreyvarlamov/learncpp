@@ -120,3 +120,40 @@ int main()
 //}
 // The compiler may choose a different order to evaluate the operand expressions
 // in the compound expression.
+
+// 5.2 - Arithmetic operators
+// Unary: plus and minus
+// Unary minus - multiplied by -1
+// Unary plus - returns the value of the operand
+
+// Integer and floating point division
+// Think of the division operator as having 2 different "modes".
+// If either or both of the operands are floating point values, the division operator
+// performs floating point division. Otherwise - integer division.
+
+// int x { 7 };
+// int y { 4 };
+// static_cast<double>(x) / y; // 1.75
+
+// Dividing by zero - crash
+
+// 5.3 - Modulus and Exponentiation
+// Modulus - "remainder operator"
+// 7 % 4 = 3
+// 2 % 5 = 2
+// -6 % 4 = -2 // Always returns the sign of LHS
+// 6 % -4 = 2
+
+// Exponent
+// C++ does not include an exponent operator
+// To do exponents:
+// #include <cmath>
+// double x { std::pow(3.0, 4.0) };
+// The parameters and return value of pow() are of type double
+// Due to rounding errors in floating point numbers, the results of powe() may not be
+// precise (even if you pass it integers or whole numbers).
+// For integer exponentiation, best off using your own function
+// See powint_ex.cpp
+// Warning: in the vast majority of cases, integer exponentiation will overflow the
+// integral type. This is likely why such a function wasn't included in the std library
+// in the first place
