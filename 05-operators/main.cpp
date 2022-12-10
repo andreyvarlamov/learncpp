@@ -266,3 +266,37 @@ int main()
 
 // Best practice is to only use the conditional operator for simple conditionals where
 // you use the result and where it enhances readability
+
+// 5.6 - Relational operators and floating point comparisons
+// The ones that let you compare 2 values. There are 6: >, <, >=, <=, ==, !=
+
+// Comparison of calculated floating point values can be problematic
+// E.g.
+// double d1 { 100.0 - 99.99 };
+// double d2 { 10.0 - 9.99 };
+// d1 is not necessarily equal to d2, because of rounding errors
+// But sometimes comparison can be ok, if that level of precision is not needed
+// (e.g. collision calculation)
+// Equality operators with floating points are much more troublesome. Should be avoided.
+// The only exception is when the comparison is between low-precision literals or const or constexpr variables
+
+// Comparing floating point numbers
+// The most common method involves using a function that looks to see if 2 numbers are
+// almost the same. The "close enough" value is traditionally called epsilon.
+// Epsilon is generally defines as a small positive number (e.g. 0.00000001, or 1e-8)
+
+// New developers will try to write it like this:
+//#include <cmath> // for std::abs()
+//
+//// epsilon is an absolute value
+//bool approximatelyEqualAbs(double a, double, b, double apsEpsilon)
+//{
+//    // if the distance between a and b is less than absEpsilon, then a and b are "close enough"
+//    return std::abs(a - b) <= absEpsilon;
+//}
+// While this function can work, it's not great. An epsilon of 0.00001 is good for inputs
+// around 1.0, too big for inputs around 0.00000001, and too small for inputs like
+// 10,000
+// This means taht every time we call this function, we have to pick an epsilon that's
+// appropriate for our inputs.
+// See equal_float.cpp
