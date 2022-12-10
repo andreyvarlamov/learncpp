@@ -382,3 +382,26 @@ int main()
 // For symbolic constants, prefer constant variables to object-like macros.
 // Harder to debug.
 // Macros can have naming conflicts.
+
+// 4.14 - Compile-time constants, contant expressions and constexpr
+// A constant expression is an expression that can be evaluated by the compiler at
+// compile-time
+// To be a constant expression, all the values in the expression must be known at
+// compile-time (and all of the operators and functions called must support compile-
+// time evaluation).
+// Modern compilers will usually evaluate a constant expression at compile-time
+
+// Compile-time constant  - a constant whose value is know at compile-time
+// Const variables may or may not be compile-time consants.
+// A const variable is a compile-time constant if its initializer is a constant expression.
+
+// Runtime const - any const variable that is initialized with a non-constant expression.
+// E.g. initialized with a return of a function
+
+// constexpr keyword - varaiable can only be a compile-time constant.
+// If the initialization value of constexpr variable is not a constant expression, the
+// compiler will error.
+// Best practice is to use both constexpr and const, (whenever possible?)
+
+// Compilers have long been able to optimize constant subexpressions, including constexpr
+// variables). This optimization process is called "constant folding".
