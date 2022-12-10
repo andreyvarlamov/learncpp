@@ -65,3 +65,37 @@ int main()
     return 0;
 }
 
+// 4.4 - Signed integers
+// Sign bit
+// (short int=short)
+// integral types are signed by default (signed short/int=short/int)
+
+// Integer overflow
+// -> Undefined results
+
+// Integer division
+// Fractional portion is simply dropped
+
+// 4.5 - Unsigned integers
+// unsigned int ui;
+// Unsigned integer overflow - wraps around
+// store 280 in 1 byte (0-255) -> 280 / 256 = 1; remainder 24 -> 24 is stored
+// Compiler will issue warnings about overflow or truncation
+// Can wrap around the other way too
+// Many developers (and some large development houses, such as Google) believe that
+// developers should generally avoid unsigned integers.
+// Subtraction of 2 unsigned numbers; decrementing by one, etc. - all dangerous
+// Mixing signed and unsigned integers. In a mathematical operation in C++
+// (arithmetic or comparison), the signed integer will be converted to unsigned, and because
+// unsigned integers can not store negative numbers, this can result in loss of data.
+// Compiler should warn about a signed/unsigned mismatch.
+
+// Also function parameters void doSomething(unsigned int x)
+// Can pass -1 - will wrap around, no good way to guard against it
+// Best to avoid unsigned types except in specific circumstances.
+
+// What it's useful for?
+// Preferred when dealing with bit manipulation
+// When well-defined wrap-around behavior is required (e.g. in ecryption and random
+// number generator).
+// Unsigned numbers is still unavoidable in some cases, e.g. array indexing.
