@@ -29,8 +29,9 @@ int main() {
     std::cout << y << '\n';
     std::cout << *p_x << '\n';
     
-    takes_reference(y);
-    std::cout << x << '\n';
+    takes_reference(y); // or x, or *p_x
+    ++*p_x;
+    std::cout << y << '\n';
 
     return 0;
 }
