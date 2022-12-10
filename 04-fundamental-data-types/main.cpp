@@ -195,3 +195,82 @@ int main()
 // on your system (in bytes).
 // By definition, any object with a size (in bytes) larger that the largest integral value
 // size_t can hold is considered ill-formed (and will cause a compile error).
+
+// 4.8 - Floating point numbers
+// "floating" - supports a variable number of digits before and after the decimal point.
+// On modern architectures, almost always follows IEEE 754
+
+// Category         Type        Min size    Typical size
+// floating point   float       4 bytes     4 bytes
+//                  double      8 bytes     8 bytes
+//                  long double 8 bytes     8, 12, or 16 bytes
+
+// When using floating point literals, always include at least one decimal place, to help
+// the compiler understand that the number is a floating point number and not an integer.
+// int x { 5 };
+// double y { 5.0 }; // no suffix - double
+// float z { 5.0f }; // f suffix - float
+
+// Printing out
+// std::cout << 5.0 << '\n'; // 5 - by default std::cout will not print the fractional
+// std::cout << 6.7 << '\n'; // 6.7
+// std::cout << 9876543.21 << '\n'; // 9.87654e+06
+
+// Floating point precision
+// Number of significant digits (9.87654)
+
+// size            Range                         Precision
+// 4 bytes         +-1.18E-38 to +-3.4E38        6-9 sig digits (typically 7)
+// 8 bytes         +-2.23E-308 to +- 1.80E308    15-18 sig digits (typically 16)
+// 80 bits (typ.   +-3.36E-4932 to +-1.18E4932   18-21 sig digits
+//   uses 12 or
+//   16 bytes)
+// 16 bytes        +-3.36E-4932 to +-1.18E4932   33-36 sig digits
+
+// We can override the default precision that std::cout shows by using an `output
+// manipulator` - std::setprecision(). Defined in iomanip header.
+// std::cout << std::setprecision(16);
+// std::cout << 3.33...f << '\n'; // Will be output with 16 digits of precision
+// But won't be actually precise to 16 digits! And floats are less precise than doubles.
+// std::cout << std::setprecision(16);
+// std::cout << 3.3333333333333333333f << '\n'; // 3.333333253873693
+// std::cout << 3.3333333333333333333 << '\n'; // 3.333333333333334
+// Loss of precision will also affect large numbers
+// Best practice - favor double over float unless space is at a premium.
+
+// Rounding errors make floating point comparisons tricky.
+// E.g. in decimal representation: 0.1; in binary: infinite sequence:
+// 0.00011001100110011...
+// std::cout << 0.1 << '\n'; // double, using the default cout precision of 6
+// std::cout << std::setprecision(17);
+// std::cout << 0.1 << '\n';
+// Outputs:
+// 0.1
+// 0.10000000000000001
+// Comparing floating point numbers is generally problematic - will be discussed more
+// later.
+
+// NaN and Inf
+//#include <iostream>
+//
+//int main()
+//{
+//    double zero { 0.0 };
+//    double posinf { 5.0 / zero }; // positive infinity
+//    std::cout << posinf << '\n';
+//
+//    double neginf {-5.0 / zero }; // negative infinity
+//    std::cout << neginf << '\n';
+//
+//    double nan { zero / zero }; // not a number (mathematically invalid)
+//    std::cout << nan << '\n';
+//
+//    return 0;
+//}
+
+// Outputs (using VS 2008 on Windows):
+// 1.#INF
+// -1.#INF
+// 1.#IND
+// IND = Indeterminate
+// Platform specific
