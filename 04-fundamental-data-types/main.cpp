@@ -405,3 +405,36 @@ int main()
 
 // Compilers have long been able to optimize constant subexpressions, including constexpr
 // variables). This optimization process is called "constant folding".
+
+// 4.15 - Literals
+// All literals have a type
+
+// If the default type of a literal is not as desired, you can change the type of a literal
+// by adding a suffix.
+
+// Data type        Suffix                                  Meaning
+// integral         u or U                                  unsigned int
+// integral         l or L                                  long
+// integral         ul, uL, Ul, UL, lu, lU, Lu, LU          unsigned long
+// integral         ll or LL                                long long
+// integral         ull, uLL, Ull, ULL, llu, llu, LLu, LLU  unsigned long long
+// integral         z or Z                                  The signed version of std::size_t (C++23)
+// integral         uz or UZ                                std::size_t (C++23)
+// floating point   f or F                                  float
+// floating point   l or L                                  long double
+// string           s                                       std::string
+// string           sv                                      std::string_view
+
+// Best practice: avoid magic numbers, and use constexpr variables instead.
+
+// 4.16 - Numeral systems (decimal, binary, hexadecimal, and octal)
+// To use an octal literal, prefix your literal with a zero (e.g. 012)
+// To use hexadecimal, prefix with 0x
+
+// Prior to C++14, no support for binary literals (just use hex)
+// In C++14, 0b prefix. And a quotation mark (') as a digit separator
+
+// Outputting values in decimal, octal or hex with std::dec, std::oct and std::hex
+// Can't format as a binary, but there's a type in C++ std library - std::bitset
+// std::bitset<8> bin1 { 0b1100'0101 }; std::cout << bin1 << '\n';
+// Number of bits must be a compile-time constant
