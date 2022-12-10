@@ -274,3 +274,20 @@ int main()
 // 1.#IND
 // IND = Indeterminate
 // Platform specific
+
+// 4.9 - Boolean
+// To print out "true" or "false" instead of 0 or 1 in std::cout:
+// std::cout << true << '\n'; // Output: 1
+// std::cout << std::boolalpha;
+// std::cout << true << '\n'; // Output: true
+
+// Int to bool
+// bool b { 4 }; // Brace initialization disallows narrowing conversions -> error
+// bool b1 = 4; // Copy initialization allows implicit conversion from int to bool -> true
+// bool b2 = 0; // -> false
+// b1 may generate a warning
+
+// To input bool:
+// By default accepts only 0 or 1, anything else -> silently fail
+// To allow to accept "false" and "true", set std::cin >> std::boolapha;
+// With it enabled, 0 and 1 will no longer be treated as booleans
