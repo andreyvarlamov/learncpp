@@ -300,3 +300,45 @@ int main()
 // This means taht every time we call this function, we have to pick an epsilon that's
 // appropriate for our inputs.
 // See equal_float.cpp
+
+// 5.7 - Logical operators
+// Logical NOT operator has a very high level of presedence.
+// !x > y is not !(x > y)
+// (x=5; y=7); (!x) > y -> 0 > y -> false
+
+// Short circuit evaluation: if the first operand evaluates to false, logical AND knows it
+// must return false regardless of whether the second operand evaluates to true or false.
+// It will return immediately without evaluating the second operand
+// if (x == 1 && ++y == 2) { ... }
+
+// Only the built-in versions of these operators perform short-circuit evaluation. If you
+// overload these operators to make them work with your own types, those overloaded operators
+// will not perform short-circuit evaluation.
+
+// When mixing ANDs and ORs, the best practice is to explicitly parenthesize each operation
+// to ensure they evaluate how you intend.
+
+// De Morgan's law
+// !(x && y) -> !x || !y
+// !(x || y) -> !x && !y
+
+// Truth table
+
+// Where's the logical exclusive or (XOR) operator?
+// C++ doesn't provide a logical XOR operator. And unlike logical OR and logical AND,
+// logical XOR cannot be short circuit evaluated. Because of this making a logical XOR
+// operator out of logical OR and logical AND operators is challenging.
+// However, you can easily mimic logical XOR using the inequality operator.
+// if (a != b) { ... } // a XOR b, assuming a and b are bools
+// if (a != b != c != d) { ... } // a XOR b XOR c XOR d
+// If you need a form of logical XOR that works with non-bool operands, you can static
+// cast them to bool:
+// if (static_cast<bool>(a) != static_cast<bool>(b) != static_cast<bool>(c)) { ... }
+
+// Alternatively, C++ supports a set of keywords for the operators that use words instead
+// of symbols.
+// Operator     Alternate keyword
+// &&           and
+// ||           or
+// !            not
+// E.g.: not a and (b or c)
