@@ -48,3 +48,37 @@ int main()
 //
 //    return 0;
 //}
+
+// O.2 - Bitwise operators
+// Operator         Symbol      Form        Operation
+// left shift       <<          x << y      all bits in x shifted left y bits
+// right shift      >>          x >> y      all bits in x shifted right y bits
+// bitwise NOT      ~           ~x          all bits in x flipped
+// bitwise AND      &           x & y       each bit in x AND each bit in y
+// bitwise OR       |           x | y       each bit in x OR each bit in y
+// bitwise XOR      ^           x ^ y       each bit in x XOR each bit in y
+// The bitwise operators are defined for integral types and std::bitset. Use bitset because
+// it's easier to print the output in binary.
+// Best practice: to avoid surprises, use the bitwise operators with unsigned operands or
+// std::bitset
+
+// Bitwise left shift (<<) and bitwise right shift (>>) operators
+// Bits that are shifted off the end of the number are lost
+// e.g. 0011 << 1 is 0110; 0011 << 3 is 1000
+// e.g. 1100 >> 1 is 0110; 1100 >> 3 is 0001
+
+// std::cout has overloaded operator << so it does console output instead of bit shifting.
+// Same for >>
+// Parentesization is required:
+// std::cout << x << 1 << '\n'; // not the same as
+// std::cout << (x << 1) << '\n';
+
+// Bitwise NOT: ~0100 is 1011
+
+// Bitwise OR: 0101 | 0110 is 0111
+
+// Bitwise AND: 0101 & 0110 is 0100
+
+// Bitwise XOR: 0110 ^ 0011 is 0101
+
+// Bitwise assignment operators: <<=, >>=, |=, &=, ^=
