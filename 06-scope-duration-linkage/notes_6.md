@@ -180,4 +180,80 @@ See *summary_scope_duration_linkage.md*
 
 <br>
 
-## 6.12 -
+## 6.12 - Using declarations and using directives
+
+### Qualified and unqualified
+A **qualified** name is a name that includes an associated scope. Most often, using `::` or,
+for classes, member selection: `.` or `->`.
+
+An **unqualified** name is a name that does not include a scoping qualifier.
+
+### Using declarations
+Allows us to use an unqualified name as an alias for a qualified name.
+
+E.g.
+
+```c++
+#include <iostream>
+
+int main()
+{
+    using std::cout;
+    cout << "Hello world!\n";
+
+    return 0;
+}
+```
+
+With this declaration, if there's a naming conflict between std::cout and some other use
+of cout, std::cout will be preferred
+
+Generally considered safe and acceptable (when used inside a function).
+
+### Using directives
+A **using directive** imports all of the identifiers from a namespace into its own scope.
+
+*Using directives* are  the solution that was provided for old pre-namespace codebases
+that used unqualified names for std library functionality.
+
+In modern C++, generally little benifit. And too much risk. "Ambiguous symbol" error. Lack
+of clarity.
+
+### The scope of using declarations and directives
+If a *using declaration* or *using directive* is used within a block, the names are
+applicable to just that block (it follows the normal block scoping rules).
+
+If a *using declaration* or *using directive* is used in the global namespace, the names
+are appicable to the entire rest of the file (they have *file scope*).
+
+### Cancelling or replacing a using statement
+Once a *using statement* has been declared, there's no way to cancel or replace it with a
+different *using statement* within the scope in which it was declared.
+
+The best you can do:
+
+```c++
+int main()
+{
+    {
+        using namespace foo;
+        // do stuff with foo
+    }
+
+    {
+        using namespace goo;
+        // do stuff with goo
+    }
+
+    return 0;
+}
+```
+
+### Best practices for using statements
+Avoid *using directives* (particularly `using namespace std;`), except in specific
+circumstances (e.g. `using namespace std::literals` to acces `s` and `sv` literal
+suffixes.
+
+*Using declarations* are generally considered safe to use inside blocks. Limit their use
+in the global namespace of a code file, and never use them in the global namespace of a
+header file.
