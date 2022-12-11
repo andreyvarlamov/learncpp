@@ -263,3 +263,35 @@ int main()
 // which they are defined.
 // Local variables have automatic duration, which means they are created at the point of
 // definition, and destroyed at the end of the block in which they are defined.
+
+
+
+// 6.4 - Introduction to global variables
+// In C++, variables can also be declared outside a function. Such variables are called
+// global variables.
+
+// Declaring and naming global variables
+// By convention, global variables are declared at the top of a file, below the includes,
+// but above any code. E.g.:
+// int g_x { };
+// Best Practice: prefix using "g" or "g_"
+
+// Global variables have file scope and static duration
+// File scope ("global scope", "global namespace scope"). Visible from the point of
+// declaration to until the end of the file in which they are declared. Once declared, a
+// global variable can be used anywhere in the file from that point onward.
+// Because they are defined outside of a function, global variables are considered to be
+// part of the global namespace.
+// Global variables are created when the program starts, and destroyed when it ends. This
+// is called static duration. Variables with static duration are sometimes called static
+// variables.
+
+// Global variable initialization.
+// Unlike local variables, which are uninitialized by default, variables with static duration
+// are zero-initialized by default.
+// int g_y; // no explicit initializer (zero-initialized by default)
+// int g_y { }; // zero-initialized
+
+// Constant global variables. Must be initialized
+
+// Should generally be avoided.
