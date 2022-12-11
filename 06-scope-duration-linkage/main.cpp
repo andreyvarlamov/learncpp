@@ -434,3 +434,50 @@ int main()
 // variables with internal linkage, and "global scope" to global variables with external
 // linkage (since they can be used across the whole program, with the appropriate forward
 // declarations).
+
+// 6.8 - Why (non-const) global variables are evil
+// Makes the program state unpredictable
+// Harder debugging/understanding code
+// Less modular and flexible
+
+// The initilization order problem of global variables
+// Initialization of static variables (which includes global variables) happens as part
+// of program startup, before execution of the main function.
+// The first phase: static initialization
+// In this phase global variables with constexpr initializers (including literals) are
+// initialized to those values. Also, global variables without initializers are zero-
+// initialized
+// The second phase: dynamic initialization
+// More complex, but basically non-constexpr initializers are initialized
+// Within a single file, global variables are generally initialized in order of definition
+// Much more of a problem is that the order of initialization across different files is
+// not defined. Any file could have its global variables initialized first
+
+// Warning: Avoid dynamic initialization of global variables whenever possible.
+
+// Good reasons to use non-const global variables
+// Not many.
+// E.g. a log file - probably makes sense to define it as a global
+// std::cout and std::cin are global variables.
+// 2 criteria: there should only ever be one of the thing the variable represents in your
+// program, and its use should be ubiquitous throught your program.
+
+// Good practices when using global variables:
+// Prefix all non-namespaces global variables with g or g_. Or better yet, put them in a
+// namespace to reduce the chance of naming collisions. (E.g. constants namespace).
+// Encapsulate the variable.
+// Make it static or const, then provide external global access functions.
+// E.g.
+//namespace constants
+//{
+//    constexpr double gravity { 9.8 };
+//}
+//
+//double getGravity()
+//{
+//    return constants::gravity;
+//}
+// When writing an otherwise standalone function that uses the global variable, don't use
+// the variable directly in your function body. Pass it as an argument instead. That way,
+// if your function ever needs to use a different value for some circumstance, you can
+// simply vary the argument
