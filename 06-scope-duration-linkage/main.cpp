@@ -295,3 +295,24 @@ int main()
 // Constant global variables. Must be initialized
 
 // Should generally be avoided.
+
+
+
+// 6.5 - Variable shadowing (name hiding)
+// When we have a variable inside a nested block that has the same name as a variable in
+// an outer block, the nested variable hides the outer variable in areas where they are
+// both in scope.
+// Name hiding or shadowing.
+
+// Shadowing of local variables
+// When inside the nested block, there's no way to directly access the shadowed variable
+// from the outer block.
+
+// Shadowing of global variables.
+// Local variables with the same name as a global variable will shadow the global
+// variable wherever the local variable is in scope.
+// However, because global variables are part of the global namespace, we can use the
+// scope operator with no prefix to tell the compiler we mean the global variable
+
+// Avoid variable shadowing
+// Some compilers will issue a warning when a variable is shadowed
