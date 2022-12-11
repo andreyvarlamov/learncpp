@@ -1,6 +1,8 @@
 # 6 - Scope, Duration, and Linkage (cont.)
 
-## 6.9 - Sharing global constants across multiple files (using inline variables)
+------
+
+# 6.9 - Sharing global constants across multiple files (using inline variables)
 
 ### Global constants as internal variables
 Prior to C++17, the following was the easiest and most common solution:
@@ -93,11 +95,9 @@ recompiled.
 
 > Use `std::string_view` for `constexpr` strings.
 
---------------
 
-<br>
 
-## 6.10 - Static local variables
+# 6.10 - Static local variables
 
 `static` has different meanings in different contexts.
 
@@ -169,18 +169,14 @@ Better to implement that passing that as a parameter.
 > Static on global variables changes its linkage. Static on local variables changes its
 > duration.
 
---------
 
-<br>
 
-## 6.11 - Scope, duration and linkage Summary
+# 6.11 - Scope, duration and linkage Summary
 See *summary_scope_duration_linkage.md*
 
---------
 
-<br>
 
-## 6.12 - Using declarations and using directives
+# 6.12 - Using declarations and using directives
 
 ### Qualified and unqualified
 A **qualified** name is a name that includes an associated scope. Most often, using `::` or,
@@ -252,8 +248,12 @@ int main()
 ### Best practices for using statements
 Avoid *using directives* (particularly `using namespace std;`), except in specific
 circumstances (e.g. `using namespace std::literals` to acces `s` and `sv` literal
-suffixes.
+suffixes).
 
 *Using declarations* are generally considered safe to use inside blocks. Limit their use
 in the global namespace of a code file, and never use them in the global namespace of a
 header file.
+
+
+
+# 6.13 - Inline functions
