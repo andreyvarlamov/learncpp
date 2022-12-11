@@ -216,3 +216,50 @@ int main()
 // As an additional advantage, placing library code inside a namespace also allows the user
 // to see the contents of your library by using their editor's auto-complete and suggestion
 // feature.
+
+
+
+// 6.3 - Local variables
+// Local variables have block scope
+
+// All variable names within a scope must be unique
+
+// Local variables have automatic storage duration
+// Variable's storage duration (usually just duration) determines what rules govern when
+// and how a variable will be created and destroyed. In most cases, a variable's storage
+// duration directly determines its lifetime.
+
+// Local variables can be defined inside nested blocks. The scope of those variables is
+// limited to the inner block in which they are defined.
+
+// Local variables have no linkage.
+// Identifiers have another property named linkage. An identifier's linkage determines
+// whether other declarations of that name refer to the same object or not.
+// Local variables have no linkage, which means that each declaration refers to a
+// unique object
+// E.g.
+//int main()
+//{
+//    int x { 2 }; // local variable, no linkage
+//
+//    {
+//        int x { 3 }; // this identifier x refers to a different object than the previous x
+//    }
+//
+//    return 0;
+//}
+
+// Variables should be  defined in the most limited scope.
+// E.g. if a variable is only used within a nested block, it should be defined inside that
+// nested block.
+// Best practice: Define variables in the most limited existing scope. Avoid creating
+// new blocks whose only purpose is to limit the scope of variables.
+
+// Scope/lifetime/duration recap
+// A variable's scope determines where the variable is accessible
+// Duration defines the rules that govern when a variable is created and destroyed.
+// A variable's lifetime is the actual time between its creation and destruction.
+// Local variables have block scope, which means they can be accessed inside the block in
+// which they are defined.
+// Local variables have automatic duration, which means they are created at the point of
+// definition, and destroyed at the end of the block in which they are defined.
