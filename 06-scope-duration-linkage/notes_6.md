@@ -93,4 +93,76 @@ recompiled.
 
 > Use `std::string_view` for `constexpr` strings.
 
-![C++ test](https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/640px-ISO_C%2B%2B_Logo.svg.png)
+
+
+## 6.10 - Static local variables
+
+`static` has different meanings in different contexts.
+
+*static duration*
+
+`static` keyword - gives a global identifier *internal linkage*.
+
+And now: `static` keyword when applied to a local variable.
+
+### Static local variables
+Local variables have *automatic duration* by default. (Created at the point of definition,
+destroyed when the block is exited).
+
+Using the `static` keyword on a local variable changes it to *static duration*. -- Created
+at the start of the program, destroyed at the end of the program. As a result the static
+variable will retain its value even after it goes out of scope.
+
+```c++
+void incrementAndPrint()
+{
+    static int s_value { 1 };
+    ++s_value;
+    std::cout << s_value << '\n';
+}
+
+int main()
+{
+    incrementAndPrint(); // 2
+    incrementAndPrint(); // 3
+    incrementAndPrint(); // 4
+
+    return 0;
+}
+```
+
+Static local variables that are zero initialized or have a constexpr initializer can be
+initialized at program start. Ones with non-constexpr initializers are initialized the
+first time the variable definition is encountered. The definition is skipped on subsequent
+calls, so no reinitialization happens). Static local variables that are not explicitly
+initialized will be zero-initialized by default.
+
+Common to use "s_" prefix.
+
+Most common use case: unique ID generator.
+
+Advantage over global variable is that the
+scope of the variable is still within that one block.
+
+> **Best practice**
+> Initialize your static variables. Static local variables are only initialized the first
+> time the code is executed, not on subsequent calls.
+
+### Static local constants
+Static local variables can be made const (or constexpr).
+Use case: you have a function that needs to use a const value, but creating or
+initializing the object is expensive (e.g. query db). With a const/constexpr static local
+variable, you can create and initialize the expensive object once, and then reuse it on
+subsequent calls. *(Is that what lazy loading is?)*
+
+### Don't use static local variables to alter flow
+Makes the code harder to understand. "It worked last time" problem. Not reusable.
+
+Better to implement that passing that as a parameter.
+
+> **Best practice**
+> Avoid `static` local variables unless the variable never needs to be reset.
+
+> Note
+> Static on global variables changes its linkage. Static on local variables changes its
+> duration.
