@@ -160,10 +160,10 @@ Makes the code harder to understand. "It worked last time" problem. Not reusable
 
 Better to implement that passing that as a parameter.
 
-> **Best practice**:
+> **Best practice**<br>
 > Avoid `static` local variables unless the variable never needs to be reset.
 
-> Note:
+> Note<br>
 > Static on global variables changes its linkage. Static on local variables changes its
 > duration.
 
