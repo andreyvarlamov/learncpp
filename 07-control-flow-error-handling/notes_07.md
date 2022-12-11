@@ -58,3 +58,41 @@ std::cout << x << ... ;
 ```
 
 x isn't defined. The blocks here are implicit.
+
+# 7.3 - Common if statement problems
+
+### Nested if statements and the dangling else problem
+
+```c++
+if (x >= 0)
+    if (x <= 20)
+        // do something
+    else
+        // do something else
+```
+
+What if statement is the else referring to? Last unmatched if statement.
+
+### Flattening nested if statements
+
+### Null statements
+
+`;` - expression statement that does nothing
+
+Common error.
+
+```c++
+if (a);
+    do();
+```
+
+Equivalent to:
+
+```c++
+if (a)
+    ;
+
+do()
+```
+
+### == vs =
