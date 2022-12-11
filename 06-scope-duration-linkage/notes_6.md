@@ -95,6 +95,8 @@ recompiled.
 
 --------------
 
+<br>
+
 ## 6.10 - Static local variables
 
 `static` has different meanings in different contexts.
@@ -144,7 +146,7 @@ Most common use case: unique ID generator.
 Advantage over global variable is that the
 scope of the variable is still within that one block.
 
-> **Best practice**:
+> **Best practice**<br>
 > Initialize your static variables. Static local variables are only initialized the first
 > time the code is executed, not on subsequent calls.
 
@@ -169,9 +171,13 @@ Better to implement that passing that as a parameter.
 
 --------
 
+<br>
+
 ## 6.11 - Scope, duration and linkage Summary
 See *summary_scope_duration_linkage.md*
 
 --------
+
+<br>
 
 ## 6.12 -
