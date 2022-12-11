@@ -1,0 +1,35 @@
+# 7 - Control Flow and Error Handling
+
+-----
+
+# 7.1 - Control flow introduction
+
+**Control flow statements**
+**Branching**
+
+### Categories of flow control statements
+
+* Conditional statements
+  * Conditional statements cause a sequence of code to execute only if some condition is
+    met
+  * `if`, `switch`
+
+* Jumps
+  * Jumps tell the CPU to start executing the satements at some other location.
+  * `goto`, `break`, `continue`
+
+* Function calls
+  * Jumps to some other location and back
+  * *function calls*, `return`
+
+* Loops
+  * Repeatedly execute some sequence of code 0 or more times, until some condition is met.
+  * `while`, *do-while*, `for`, `ranged-for`
+
+* Halts
+  * Halts tell the program to quit running.
+  * `std::exit()`, `std::abort()`
+
+* Exceptions
+  * Special kind of flow control structure designed for error handling
+  * `try`, `throw`, `catch`
