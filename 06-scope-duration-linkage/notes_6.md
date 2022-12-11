@@ -328,3 +328,168 @@ any code file that needs to see the full definition of the function.
 
 > **Best practice**<br>
 > Avoid using the `inline` keyword for functions unless there's a specific reason.
+
+
+
+# 6.14 - Constexpr and consteval functions
+
+Using functions could be bad for performance, since we lose the ability for that code to
+be evaluated at compile-time.
+
+### Constexpr functions can evaluated at compile-time
+Function whose return value may be computed at compile-time.
+
+E.g.:
+
+```c++
+#include <iostream>
+
+constexpr int greater(int x, int y)
+{
+    return (x > y ? x : y);
+}
+
+int main()
+{
+    constexpr int x{ 5 };
+    constexpr int y{ 6 };
+
+    constexpr int g { greater(x, y) };
+
+    std::cout << g << " is greater!\n";
+
+    return 0;
+}
+```
+
+Compiler replaces it with this:
+
+```c++
+#include <iostream>
+
+int main()
+{
+    constexpr int x{ 5 };
+    constexpr int y{ 6 };
+
+    constexpr int g{ 6 };
+
+    std::cout << g << " is greater!\n";
+
+    return 0;
+}
+```
+
+To be eligible for compile-time evaluation, a function must have a constexpr return type,
+not call any non-constexpr functions, and have constexpr arguments (e.g. constexpr
+variables or literals).
+
+> **Best practice**<br>
+> Use it for functions that need to return a compile-time constant.
+
+### Constexpr functions are implicitly inline
+Constexpr function called in multiple files would need to have its definition included
+into each such file -- normally a violation of one-definition rule -- but constexpr
+functions are implicitly inline.
+
+As a result contexpr functions are often defined in header files, so they can be #included
+into any .cpp file that requires the full definition.
+
+### Constexpr functions can also be evaluated at runtime
+E.g. when arguments are not constexpr.
+
+This was allowed so that a single function can serve both cases. Otherwise, you'd need to
+have separate functions (a function with a constexpr return type, and a function with a
+non-constexpr return type). Duplicate code in 2 functions that have to have different
+names.
+
+### So when is a constexpr function evaluated at compile-time?
+According to the C++ standard, a constexpr function that is eligible for compile-time
+evaluation must be evaluated at compile-time if the return value is used where a constant
+expression is required. Otherwise, the compiler is free to evaluate the function at either
+compile-time or runtime.
+
+E.g.
+
+```c++
+constexpr int greater(int x, int y) { ... }
+
+int main()
+{
+    constexpr int g { greater(5, 6) }; // case 1: evaluated at compile-time
+    int x { 5 }; // not constexpr
+    std::cout << greater(x, 6) ... ; // case 2: evaluated at runtime
+    std::cout << greater(5, 6) ... ; // case 3: may or may not be evaluated at compile-time
+
+    return 0;
+}
+```
+
+Compiler's optimization level setting may have an impact on whether it decides to evaluate
+a function at compile-time or runtime. Debug vs release builds.
+
+Better to think of a constexpr function, not as "will be evaluated at compile-time", but
+as "can be used in a constant expression".
+
+### Determining if a constexpr function call is evaluating at compile-time or runtime
+In C++20, `std::is_constant_evaluated()` (in <type_traits> header).
+
+E.g.
+
+```c++
+#include <type_traits>
+
+constexpr int some_function()
+{
+    if (std::is_constant_evaluated()) // if compile-time evaluation
+    {
+        // do something
+    }
+    else
+    {
+        // do something else
+    }
+}
+```
+
+### Consteval (C++20)
+Used to indicate that a function *must* evaluate at compile-time, otherwise a compile
+error will result. Such functions are called **immediate functions**
+
+`consteval int greater(int x, int y) { ... }`
+
+> **Best practice**<br>
+> Use `consteval` if you have a function that must run at compilet time for some reason
+> (e.g. performance).
+
+### Using consteval to make constexpr execute at compile-time (C++20)
+Downside: such functions can't evaluate at runtime -- less flexible.
+
+Convinent way to force constexpr functions to evaluate at compile-time (even when the
+return value is being used where a constant expression is not required), so that we can
+have compile-time evaluation when possible, and runtime evaluation when not.
+
+```c++
+#include <iostream>
+
+consteval auto compile_time(auto value)
+{
+    return value;
+}
+
+constexpr int greater(int x, int y) { ... }
+
+int main()
+{
+    std::cout << greater(5, 6) ... ; // may or may not execute at compile-time
+    std::cout << compile_time(greater(5, 6)) ... ; // will execute at compile-time
+    int x { 5 };
+    std::cout << greater(x, 6) ... ; // can still call the constexpr version at runtime
+
+    return 0;
+}
+```
+
+Consteval function returns by value.
+
+We cover `auto` return types in 8.8; abbreviated function templates (`auto` param) in 8.15.
