@@ -42,8 +42,8 @@ Downsides to this method:
 2. The compiler may not be able to optimize these as much.
 3. Inability to use constexpr.
 
-* In order for variables to be usable in compile-time contexts, such as array sizes, the
-  compiler has to see the variable's definition (not just a forward declaration).*
+> In order for variables to be usable in compile-time contexts, such as array sizes, the
+> compiler has to see the variable's definition (not just a forward declaration).
 
 ### Global constants as inline variables (C++17)
 The term `inline` has evolved to mean "multiple definitions are allowed". -> Allowed to be
@@ -87,8 +87,8 @@ header to be recompiled if any constant value is changed. As a remedy, could mov
 often changing constants into their own header, to reduce the number of files needed to be
 recompiled.
 
-** Best practice is to use inline constexpr global variables **
+**Best practice is to use inline constexpr global variables**
 
-* Use `std::string_view` for `constexpr` strings. *
+> Use `std::string_view` for `constexpr` strings.
 
-![C++ test][https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/640px-ISO_C%2B%2B_Logo.svg.png]
+![C++ test](https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/640px-ISO_C%2B%2B_Logo.svg.png)
