@@ -257,3 +257,74 @@ header file.
 
 
 # 6.13 - Inline functions
+
+One downside of using a function is that every time a function is called, there is a
+certain amount of performance overhead that occurs.
+
+The CPU has to store the address of the current instruction it is executing along with the
+values of various CPU registers. Params instantiated and then initialzied. Jump to the
+code in the function. Then jump back, return value copied.
+
+For large functions, the overhead is insignificant, but for small ones, the overhead cost
+can be larger than the time needed to actually execute the function's code.
+
+### Inline expansion
+C++ compiler has a trick: **inline expansion** - function call is replaced by the code
+from the called function's definition.
+
+Furthermore, the inline expanded code can also be a compile-time constant -> further
+optimize.
+
+However, inline expansion has its own potential cost: if the body of the function being
+expanded takes more instructions than the function call being replaced, then each inline
+expansion will cause the executable to grow larger. Larger executables tend to be slower
+due to not fitting as well in caches.
+
+The decision about the cost/benefit is not straightforward.
+
+### When inline expansion occurs
+Every function falls into one of three categories, where calls to the function:
+
+1. Must be expanded.
+2. May be expanded (most functions are in this category).
+3. Can't be expanded.
+
+A function that is eligible to have its function calls expanded is called an inline
+function.
+
+A modern compiler will assess each function and each function call to make a determination
+about whether that particular function call would benefit from inline expansion.
+
+> Some types of functions are implicitly treated as inline functions:
+> * Functions defined inside a class, struct or union type definition.
+> * Cosntexpr / consteval functions
+
+### The inline keyword, historically
+Historically, compilers didn't have the capability to determine whether the inline
+expansion would be beneficial.
+
+`inline` keyword -- (just a) hint to the compiler that a function would benefit from being
+expanded inline.
+
+However, in modern C++, the `inline` keyword is no longer used to request that a
+function be expanded inline. The compiler will likely ignore or devalue any `inline`
+request.
+
+> Note<br>
+> Wrong level of granularity: use the `inline` keyword on a function declaration, but
+> inline expansion is actually determined on a per function call basis.
+
+### The inline, modernly
+It was mentioned before, that you should not implement functions (with extneral linkage)
+in header files (include in multiple .cpp -> linker error (one-definition rule))
+
+Same as in 6.9 (inline variables), in modern C++, the inline concept evolved to have a new
+meaning: multiple definitions are allowed in the program. Thus if we mark a function
+inline, that function is allowed to have multiple definitions (in different files), as
+long as those definitions are identical.
+
+Inline functions are typically defined in header files, where they can be #included into
+any code file that needs to see the full definition of the function.
+
+> **Best practice**<br>
+> Avoid using the `inline` keyword for functions unless there's a specific reason.
