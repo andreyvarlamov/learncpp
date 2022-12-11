@@ -167,7 +167,13 @@ Better to implement that passing that as a parameter.
 > Static on global variables changes its linkage. Static on local variables changes its
 > duration.
 
-
-
+<br>
+<br>
+<br>
 ## 6.11 - Scope, duration and linkage Summary
 See *summary_scope_duration_linkage.md*
+
+<br>
+<br>
+<br>
+## 6.12 -
