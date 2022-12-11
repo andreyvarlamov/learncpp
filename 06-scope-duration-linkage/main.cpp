@@ -316,3 +316,38 @@ int main()
 
 // Avoid variable shadowing
 // Some compilers will issue a warning when a variable is shadowed
+
+
+
+// 6.6 - Internal linkage
+// In 6.3, we said, an identifier's linkage determines whether other declarations of that
+// name refer to the same object or not.
+// We discussed how local variables have no linkage.
+// Global variable and function identifiers can have either internal linkage or external
+// linkage.
+// An identifier with internal linkage can be seen and used within a single file, but it
+// is not accessible from other files (that is, it is not exposed to the linker).
+// This means that if two files have identically named identifiers with internal linkage,
+// those identifiers will be treated as independent.
+
+// Global variables with internal linkage
+// Sometimes called internal variables.
+// To make a non-constant global variable internal, we use the `static` keyword
+// Const and constexpr global variables have internal linkage by default (and thus don't
+// need the static keyword - if it is used, it will be ignored).
+
+// The use of the static keyword above is an example of a storage class specifier, which
+// sets both the name's linkage and its storage duration (but not its scope). The most
+// comonly used storage class specifiers are static, extern and mutable.
+
+// The one-definition rule and internal linkage
+// Internal objects (and functions) that are defined in different files are considered to
+// be independent entiteis (even if their names are identical), so there is no violation
+// of the one-defintion rule. Each internal object only has one definition.
+
+// Functions with internal linkage
+// Because linkage is a property of an identifier (not of a variable), function identifiers
+// have the same linkage property that variable identifiers do.
+// Functions default to external linkage, but can be set to internal linkage via the
+// static keyword
+// E.g. static int add(int x, int y) { ... }
