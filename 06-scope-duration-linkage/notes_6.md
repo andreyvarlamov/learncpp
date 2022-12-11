@@ -493,3 +493,71 @@ int main()
 Consteval function returns by value.
 
 We cover `auto` return types in 8.8; abbreviated function templates (`auto` param) in 8.15.
+
+
+
+# 6.16 - Unnamed and inline namespaces
+
+### Unnamed (anonymous) namespaces
+```c++
+#include <iostream>
+
+namespace
+{
+    void do_something()
+    {
+        std::cout << 'a\n';
+    }
+}
+
+int main()
+{
+    do_something(); // can call without a namespace prefix
+
+    return 0;
+}
+```
+
+All content declared in an *unnamed namespace* is treated as if it is part of the parent
+namespace.
+
+All identifiers inside an *unnamed namespace* are trated as if they had *internal
+linkage*, which means that the content of an *unnamed namespace* can't be seen outside of
+the file in which the *unnamed namespace* is defined.
+
+(For functions, essentially the same as defining all functions in the *unnamed namespace*
+as *static functons*.
+
+Typically used when you have a lot of content that you want to ensure stays local to a
+given file. Also will keep *user-defined types* local to the file, for which there's no
+alternative way to do that.
+
+### Inline namespaces
+Anything declared inside an *inline namespace* is considered part of the parent namespace.
+However, inline namespaces don't give everything *internal linkage*.
+
+E.g. versioning with backwards compatibility:
+
+```c++
+#include <iostream>
+
+inline namespace v1
+{
+    void do_something() { ... }
+}
+
+namespace v2
+{
+    void do_something() { ... }
+}
+
+int main()
+{
+    v1::do_something();
+    v2::do_something();
+
+    do_something(); // calls the inline version of do_something (namespace v1)
+
+    return 0;
+}
+```
