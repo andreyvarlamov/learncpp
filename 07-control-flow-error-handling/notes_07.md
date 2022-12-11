@@ -33,3 +33,28 @@
 * Exceptions
   * Special kind of flow control structure designed for error handling
   * `try`, `throw`, `catch`
+
+
+
+# 7.2 - If statements and blocks
+...
+
+> **Best practice**<br>
+> Use blocks in if statements
+
+Middle ground: put single-lines on the same line as the `if` or `else`
+
+### Implicit blocks
+Common mistake
+
+```c++
+...
+if (cond)
+    int x { 5 };
+else
+    int x { 6 };
+
+std::cout << x << ... ;
+```
+
+x isn't defined. The blocks here are implicit.
