@@ -144,7 +144,7 @@ Most common use case: unique ID generator.
 Advantage over global variable is that the
 scope of the variable is still within that one block.
 
-> **Best practice**
+> **Best practice**:
 > Initialize your static variables. Static local variables are only initialized the first
 > time the code is executed, not on subsequent calls.
 
@@ -160,9 +160,14 @@ Makes the code harder to understand. "It worked last time" problem. Not reusable
 
 Better to implement that passing that as a parameter.
 
-> **Best practice**
+> **Best practice**:
 > Avoid `static` local variables unless the variable never needs to be reset.
 
-> Note
+> Note:
 > Static on global variables changes its linkage. Static on local variables changes its
 > duration.
+
+
+
+## 6.11 - Scope, duration and linkage Summary
+See *summary_scope_duration_linkage.md*
