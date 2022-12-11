@@ -58,6 +58,7 @@ memory.
 
 Define these in a header file, in a namespace, using `inline` keyword. 
 E.g.:
+
 constants.h:
 ```c++
 namespace constants
@@ -66,6 +67,7 @@ namespace constants
     ...
 }
 ```
+
 main.cpp:
 ```c++
 #include "constants.h"
