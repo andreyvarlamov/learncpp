@@ -120,6 +120,8 @@ switch(x)
 }
 ```
 
+Advantage over other methods: `x` gets evaluated only once
+
 Switch only allows conditions that evaluate to an integral type or enumerated type. I.e.
 no strings, floats, etc.
 
@@ -146,3 +148,105 @@ default case has been provided, then no cases inside the switch are executed. Ex
 continues after the end of the switch block.
 
 ### Break statement
+
+
+
+# 7.5 - Switch fallthrough and scoping
+
+### Fallthrough
+When a switch expression matches a case label or optional default label, execution begins
+at the first statement following the matching label. Exeuction will then continue
+sequentially until one of the following termination conditions happens:
+
+1. The end of the switch block is reached
+2. Another control flow statement (typically a `break` or `return` causes the switch block
+   or function to exit
+3. Something else interrupts the normal flow of the program (e.g. the OS shuts down the
+   program, etc.)
+
+Since fallthrough is rarely desired or intentional, many compilers and code analysis tools
+wiil flag fallthrough as a warning.
+
+### The [[fallthrough]] attribute
+Since C++17
+
+**Attributes** are a modern C++ feature that allows the programmer to provide the compiler
+with some additional data about the code. Not statements.
+
+The `[[fallthrough]]` attribute modifies a *null statement* to indicate that fallthrough
+is intentional.
+
+E.g.
+
+```c++
+switch (var)
+{
+    ...
+    case 2:
+        do();
+        [[fallthrough]];
+    ...
+}
+```
+
+### Sequential case labels
+
+```c++
+bool isVowel(char c)
+{
+    switch (c)
+    {
+        case 'a':
+        case 'e':
+        ...
+            return true;
+        default:
+            return false;
+    }
+}
+```
+
+We can stack case labels to make all of those case labels share the same set of statements
+afterward. This is not considered fallthrough behavior, so use of comments of
+`[[fallthrough]]` is not needed here.
+
+### Switch cas scoping
+With switch statements, the statements after labels are all scoped to the switch block. No
+implicit blocks are created.
+
+### Variable declaration and initialization inside case statements
+You can declare or define (**but not initialize**) variables inside the switch both before
+and after the case labels.
+
+```c++
+switch (1)
+{
+    int a; // okay; definition is allowed before the case labels
+    int b { 5 }; // illegal: initialization is not allowed before the case labels
+
+    case 1:
+        int y; // okay, but bad practice: definition is allowed within a case
+        y = 4; // okay: assignment is allowed
+        break;
+
+    case 2:
+        int z { 4 }; // illegal: initialization is not allowed if subsequent cases exist
+        y = 5; // okay: y was declared above, so we can use it here too
+        break;
+
+    case 3:
+        break;
+}
+```
+
+All statements inside the switch are considered part of the same scope. Thus, a variable
+declared or defined in one case can be used in a later case, even if the case in which the
+variable is defined is never executed (because the switch jumped over it)!
+
+Initialization of variables does require the definition to execute at runtime (since the
+value of the initializer must be determined at that point). Initialization of variables is
+disallowed in any case that is not the last case, as those statements will never be
+executed, as there is no way for the switch to reach them.
+
+If a case needs to define and/or initialize a new variable, the best practice is to do so
+inside an explicit block underneath the case statement.
