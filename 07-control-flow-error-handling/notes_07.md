@@ -443,3 +443,89 @@ entire loop.
 
 > **Best practice**<br>
 > Use early returns when they simplify your function's logic
+
+
+
+# 7.11 - Halts (exiting your program early)
+What happens when a program exits normally:
+
+When the `main()` function returns (either by reaching the end of the function or via a
+`return statement`), all local variables and function parameters are destroyed (as per
+usual). Then a special function `std::exit()` is called, with the return value from
+`main()` (the *status code*) passed in as an argument.
+
+### The std::exit() function
+Causes the program to terminate normally (in an expected way). (Does not imply anything
+about whether the program was successful, that's what the *status code* is for.)
+
+`std::exit()` performs a number of cleanup functions:
+1. Objects with static storage duration are destroyed.
+2. Some other miscellaneous file cleanup is done if any files were used.
+3. Control is returned back to the OS, with the argument passed to std::exit() used as the
+   *status code*.
+
+### Calling std::exit() explicitly
+`#include <cstdlib>`
+`std::exit(0);`
+
+> **Warning**<br>
+> `std::exit()` does not clean up local variables in the current function or up the call
+> stack. Because of this, it's generally better to avoid calling `std::exit()`
+
+### std::atexit
+Because `std::exit()` terminates the program immediately, you may want to manually do some
+cleanup before terminating. E.g. closing database or network connections, deallocating any
+memory you have allocated, writing information to a log file, etc...
+
+```c++
+#include <cstdlib>
+#include <iostream>
+
+void cleanup()
+{
+    // do any kind of cleanup required
+}
+
+int main()
+{
+    // register cleanup() to be called automatically when std::exit() is called
+    std::atexit(cleanup);
+    ...
+    std::exit(0);
+    ...
+}
+```
+
+Notes:
+
+* `std::exit()` is called implicitly when main() terminates, so it will invoke any
+   functions registered by `std::atexit()`
+* The function being registered must take no parameters and have no return value
+* Can register multiple cleanup functions using std::atexit(), they will be called in
+  reverse order of registration (the last one registered will be called first).
+
+In multi-threaded programs, calling `std::exit()` can cause your program to crash (because
+the thread calling `std::exit()` will cleanup static objects that may still be accessed by
+other threads. For this reason, C++ has introduced another pair of functions that work
+similarly: `std::quick_exit()` and `std::at_quick_exit()`. The former terminates the
+program normally, but does not clean up static objects, and may or may not do other types
+of cleanup.
+
+### std::abort and std::terminate
+`std::abort()` - terimate abnormally - unusal runtime error and the program couldn't
+continue to run. E.g., trying to divide by 0 will result in an abnormal termination.
+`std::abort()` does not do any cleanup.
+
+The `std::terminate()` function is typically used in conjunction with *exceptions*.
+Although `std::terminate()` can be called explicitly, it is more often called implicitly
+when an exception isn't handled (and in a few other exception-related cases). By default,
+`std::terminate()` calls `std::abort()`.
+
+### When should you use a halt?
+Short answer - almost never. Destroying local objects is an important part of C++
+(particularly when we get into classes), and none of the above-mentioned functions clean
+up local variables. Exceptions are a better and safer mechanism for handling error cases.
+
+> **Best practice**<br>
+> Only use a halt if there is no safe way to return normally from the main function. If
+> you haven't disabled exceptions, prefer using exceptions for handling errors safely.
