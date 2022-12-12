@@ -547,3 +547,58 @@ up local variables. Exceptions are a better and safer mechanism for handling err
 ### Unit testing frameworks
 
 ### Integration testing
+
+
+
+# 7.13 - Code coverage
+
+How much of the source code of a program is executed while testing.
+
+### Statement coverage
+Percentage of statements in your code that have been exercised by your testing routines
+
+E.g.
+
+```c++
+int foo(int x, int y)
+{
+    int z { y };
+    if (x > y)
+    {
+        z = x;
+    }
+    return z;
+}
+```
+
+Calling this function as `foo(1, 0)` will give you complete statement coverate, as every
+statement in the function will execute.
+
+If there are branches, might need to call more than 1 test to cover all statements.
+
+### Branch coverage
+Percentage of branches that been executed, each possible branch counted separately.
+
+E.g. in the example above, `foo(1, 0)` gives 100% statement coverage, but only 50% branch
+coverage. Need also `foo(0, 1)`
+
+### Loop coverage
+**the 0, 1, 2 test** - ensure it works properly when it iterates 0 times, 1 time and 2
+times.
+
+### Testing different categories of input
+Some basic guidelines:
+
+For integers, make sure you've considered how your function yhandles negative values, zero
+and positive values. You should also check for overflow if that's relevant.
+
+For floating point numbers, make sure you've considered how your function handles values
+that have precision issues (values that are slightly larger or smaller than expected).
+Good double type values to test are 0.1 and -0.1 (to test nubmers that are slightly larger
+than expected) and 0.6 and -0.6 (to test numbers that are slightly smaller than expected).
+
+For strings, make sure you've considered how your function handles an empty string (just a
+null terminator), normal valid strings, strings that have whitespace, and strings that are
+all whitespace.
+
+If your function takes a pointer, don't forget to test *nullptr* as well.
