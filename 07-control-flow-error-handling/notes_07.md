@@ -250,3 +250,64 @@ executed, as there is no way for the switch to reach them.
 
 If a case needs to define and/or initialize a new variable, the best practice is to do so
 inside an explicit block underneath the case statement.
+
+
+
+# 7.6 - Goto statements
+Unconditional jump
+
+```c++
+#include <iostream>
+#include <cmath> // for sqrt() function
+
+int main()
+{
+    double x { };
+tryAgain:
+    std::cout << ...;
+    std::cin >> x;
+
+    if (x < 0.0)
+    {
+        goto tryAgain;
+    }
+
+    ...
+
+    return 0;
+}
+```
+
+### Statement labels have function scope
+Which means the label is visible throughout the function even before its point of
+declartion. The *goto statement* and its corresponding *statement label* must appear in
+the same function.
+
+Must be associated with a statement ("*statement* label")
+
+```c++
+void func()
+{
+    goto skip;
+    ...
+skip:
+    ;
+}
+```
+
+Bad form: just use if or loops, etc.
+
+Two limitations:
+1. You can only jump within the bound of a single function
+2. You can't jump forward over the initialization of any variable that is still in scope
+   at the location being jumped to.
+
+Note that you can jump backwards over a variable initialization, and the variable will be
+re-initialized when the initialization is executed.
+
+### Avoid using goto
+Dijkstra "Go To Statement Considered Harmful"
+
+Allows a programmer to jump around the code arbitrarily. --> Spaghetti code
+
+One notable exception is when you need to exit a nested loop but not the entire function.
