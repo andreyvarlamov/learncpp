@@ -641,3 +641,128 @@ Retry until successful, or cancel the operation being executed
 Non-recoverable error. Halt
 
 ### Exceptions
+
+
+
+# 7.16 - std::cin and handling invalid input
+
+### std::cin, buffers, and extraction
+How the operator>> works - extraction
+
+When the extraction operator is used, the following procedure happens:
+1. If there is data already in the input that data is used for extraction.
+2. If the input buffer contains no data, the user is asked to input data for extraction
+   (this is the case most of the time). When the user hits enter, a '\n' character will be
+   placed in the  input buffer.
+3. operator>> extracts as much data from the input buffer as it can into the variable
+   (ignoring any leading whitespace characters, such as spaces, tabs, or '\n').
+3. Any data that can not be extracted is left in the input buffer for the next extraction.
+
+Extraction succeeds if at least one character is extracted from the input buffer.
+
+E.g.
+
+```c++
+int x { };
+std::cin >> x;
+```
+
+If a user enters "5a", 5 will be extracted, converted to an integer, and assigned to a
+variable x. "a\n" will be left in the input buffer for the next extraction.
+
+Extraction fails if the input data does not match the type of the variable being
+extracted to. For example, if the user were to enter 'b', extraction would fail because
+'b' can not be extracted into an integer variable.
+
+### Validating input
+Three basic ways:
+* Inline (as the user types)
+  * Prevent the user from typing invalid input in the first place.
+* Post-entry (after the user types)
+  * Let the user enter whatever they want into a string, then validate whether the string
+    is correct, and if so, convert the string to the variable format.
+  * Let the user enter whatever they want, let std::cin and operator>> try to extract it,
+    and handle the error cases.
+
+Most often, we let std::cin and the extraction operator do the hard work. We deal with the
+fallout if it fails.
+
+## A sample program
+... Calculator ...
+
+Consider where invalid user input might break the program.
+
+* We ask the user to enter some numbers. What if they enter something other than a number?
+  In this case, extraction will fail.
+
+* We ask the user to enter one of four possible symbols. What if they enter a character
+  other than one of the symbols we're expecing? We'll be able to extract the input, but
+  need to handle what happens afterwards.
+
+* If the user enters a string like "q hello". Although we can extract the character we
+  need, there's additional input left in the buffer that could cause problems down the
+  road.
+
+### Types of invalid text input
+* Input extraction succeeds but the input is meaningless to the program.
+* Input extraction succeeds but the user enters additional input
+* Input extraction fails
+* Input extraction succeeds but the user overflows a numeric value
+
+### Error case 1: Extraction succeeds but input is meaningless
+Do input validation. Check wheter the user's input was what you were expecting. If so
+return to the caller. If not tell the user something went wrong and have them try again.
+
+### Error case 2: Extraction succeeds but with extraneous input
+To fix use this:
+
+```c++
+#include <iostream>
+#include <limits>
+std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+```
+
+`std::numeric_limits<std::streamsize>::max()` returns the largest value that can be stored
+in a variable of type std::streamsize.
+
+`std::cin.ignore(x, '\n');` will clear up to x characters out of buffer, or until a '\n'
+character is removed
+
+### Error case 3: Extraction fails
+E.g. if extracting into a double:
+
+When the user enters 'a', that character is placed in the buffer. then operator>> tries to
+extract 'a' to variable x, which is of type double. Since 'a' can't be converted to a
+double, operator>> can't do the extraction. Two things happen at this point: 'a' is left
+in the buffer, and std::cin goes into "failure mode".
+
+Once in "failure mode", future requests for input extraction will silently fail. Thus any
+output prompts (if e.g. in a loop) will still print, but any requests for further
+extraction are ignored. -> Infinite loop, because there's no way to reach one of the valid
+cases.
+
+Can do this:
+
+```c++
+if (std::cin.fail()) // has a previous extraction failed?
+{
+    std::cin.clear() // put us back in 'normal' operation mode
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // remove bad input
+}
+```
+
+Because std::cin has a Boolean conversion indicating whether the last input succeeded,
+it's more idiomatic to write the above with `if(!std::cin) { ... }`
+
+### Error 4: Extraction succeeds but the user overflows a numeric value
+E.g. when extracting into a `std::int16_t x`, what happens if the user enters a number that
+is too large (e.g. 40000)?
+
+std::cin immediately goes into "failure mode", but also assigns the closest in-range value
+to the variable. Consequently, x is left with the assigned value of 32767. Additional
+inputs are skipped, leaving y with the initialized value of 0.
+
+We can handle this kind of error in the same way as a failed extraction.
+
+### Putting it all together
+See `calculator.cpp`
