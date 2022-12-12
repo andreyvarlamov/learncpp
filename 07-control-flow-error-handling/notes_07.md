@@ -342,3 +342,20 @@ Should be signed. Especially if checking if it's greater than zero
 counter % N
 
 ### Nested loops
+
+
+
+# 7.8 - Do while statements
+
+```
+do
+    statement;
+while (condition);
+```
+
+Always executes at least once. AFter the statement has been executed, the do-while loop
+checks the condition; if true, the path of execution jumps back to the top of the do-while
+loop and executes again.
+
+> **Best practice**<br>
+> Favor while loops over do-while loops when an equal choice.
