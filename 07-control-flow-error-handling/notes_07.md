@@ -687,7 +687,7 @@ Three basic ways:
 Most often, we let std::cin and the extraction operator do the hard work. We deal with the
 fallout if it fails.
 
-## A sample program
+### A sample program
 ... Calculator ...
 
 Consider where invalid user input might break the program.
@@ -766,3 +766,72 @@ We can handle this kind of error in the same way as a failed extraction.
 
 ### Putting it all together
 See `calculator.cpp`
+
+
+
+# 7.17 - Assert and `static_assert`
+
+### Preconditions, invariants and postconditions
+**Precondition** - condition prior to execution of some component
+**Invariant** - condition while some component is executing
+**Postcondition** - condition after the execution of some component
+
+### Assertions
+Shortcut method for detecting an invalid parameter, along with printing an error message.
+
+If an expression evaluates to true, do nothing, if the expression evaluates to false,
+display an error message and terminate the program via `std::abort()`.
+
+Runtime assertions are implemented via the **assert** preprocessor macro, from <cassert>.
+
+(Function-like preprocessor macro; recall object-like preprocessor macro #define FOO 1.)
+
+Good to use these assert statements very liberally.
+
+### Making your assert statements more descriptive
+Trick: `assert(found && "Car could not be found in database");`
+
+Then assert message:
+
+```
+Assertion failed: found && "Car could not be found in database", ......., line 34
+```
+
+This works because a string literal always evaluates to `true`.
+
+### Asserts vs error handling
+The goal of asserts is to catch programming errors.
+
+On the other hand, error handling is designed to gracefully handle cases that could happen
+in release configurations.
+
+### NDEBUG
+assert macro - small performance cost. Should ideally never be encountered in production
+code (should already be thoroughly tested).
+
+C++ comes with a way to turn off asserts in production code. Macro `NDEBUG` - when
+defined, the assert macro is disabled. Some IDEs set NDEBUG by default for release
+configurations.
+
+### Some assert limitations and warnings
+
+1. Assert itself can have a bug.
+2. Asserts should have no side effects -- the program should run the same with and without
+   assert. Otherwise what you're testing in a debug configuration != release
+   configuration.
+
+### `static_assert`
+Assertion that is checked at compile-time, not runtime. Causes compile error.
+
+It is a keyword, no header needed.
+
+```
+static_assert(condition, diagnostic_message)
+```
+
+If the condition is not true, the diagnostic message is printed.
+
+Because it is evaluated by the compiler, the condition must be able to be evaluated at
+compile time.
+
+Can be placed anywhere in the code file (even in the global namespace).
