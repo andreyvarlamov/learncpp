@@ -602,3 +602,24 @@ null terminator), normal valid strings, strings that have whitespace, and string
 all whitespace.
 
 If your function takes a pointer, don't forget to test *nullptr* as well.
+
+
+
+# 7.14 - Common semantic errors in C++
+
+### Conditional logic errors
+
+### Infinite loops
+
+### Off-by-one errors
+
+### Incorrect operator precedence
+
+### Precision issues with floating point types
+
+### Integer division
+
+### Accidental null statements
+`if(check);`
+
+### Not using a compound statement when one is required
