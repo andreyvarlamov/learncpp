@@ -623,3 +623,21 @@ If your function takes a pointer, don't forget to test *nullptr* as well.
 `if(check);`
 
 ### Not using a compound statement when one is required
+
+
+
+# 7.15 - Detecting and handling errors
+Most of the errors in a program occur due to faulty assumptions made by the programmer
+and/or a lack of proper error detection/handling. Happy path testing.
+
+### Handling errors in functions: 4 strategies
+
+### Handling the error within the function
+Retry until successful, or cancel the operation being executed
+
+### Passing errors back to the caller
+
+### Fatal errors
+Non-recoverable error. Halt
+
+### Exceptions
