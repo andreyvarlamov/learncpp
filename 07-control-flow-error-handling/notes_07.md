@@ -359,3 +359,61 @@ loop and executes again.
 
 > **Best practice**<br>
 > Favor while loops over do-while loops when an equal choice.
+
+
+
+# 7.9 - For statements
+
+```
+for (init-statement; condition; end-expression)
+    statement;
+```
+
+### Evaluation of for statements
+1. The init-statement is executed. These variables have "loop scope".
+2. The condition is evaluated. If true, the statement is executed. If false, loop
+   terminates and execution continues with the next statement beyond the loop.
+3. After the statement is executed, the end-expression is evaluated. Then return to step
+   2.
+
+```c++
+for (int count { 0 }; count < max; ++count) { ... }
+```
+
+### The perils of `operator!=` in for-loop conditions
+Better to use <, because it will terminate even if the value jumps over.
+
+### "Off-by-one" errors
+
+### Omitted expressions
+Possible to write for loops that omit any or all of the statements or expressions.
+
+```c++
+int count { 0 };
+
+for ( ; count < 10; )
+{
+    ...
+    count++;
+}
+```
+
+```c++
+for (;;) // infinite loop
+{
+    statement;
+}
+```
+
+Recommended to avoid the latter.
+
+### For loops with multiple counters
+```c++
+for (int x { 0 }, y { 9 }; x < 10; ++x, --y) { ... }
+```
+
+> **Best practice**<br>
+> Defining multiple variables and using the comma operator in the end-expression is
+> acceptable inside a *for statement*.
+
+### Nested for loops
