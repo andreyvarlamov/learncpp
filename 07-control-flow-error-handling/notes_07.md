@@ -417,3 +417,29 @@ for (int x { 0 }, y { 9 }; x < 10; ++x, --y) { ... }
 > acceptable inside a *for statement*.
 
 ### Nested for loops
+
+
+
+# 7.10 - Break and continue
+
+Causes a while loop, do-while loop, for loop, or switch statement to end.
+
+### Breaking a switch
+
+### Breaking a loop
+
+### Break vs return
+
+### Continue
+**Continue statement** - end the current iteration of a loop without terminating the
+entire loop.
+
+### The debate over use of break and continue
+
+> **Best practice**<br>
+> Use break and continue when they simplify your loop logic.
+
+### The debate over use of early returns
+
+> **Best practice**<br>
+> Use early returns when they simplify your function's logic
