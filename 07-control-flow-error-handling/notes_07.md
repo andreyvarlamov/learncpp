@@ -529,3 +529,21 @@ up local variables. Exceptions are a better and safer mechanism for handling err
 > **Best practice**<br>
 > Only use a halt if there is no safe way to return normally from the main function. If
 > you haven't disabled exceptions, prefer using exceptions for handling errors safely.
+
+
+
+# 7.12 - Introduction to testing your code
+
+### The testing challenge
+
+### Test your programs in small pieces
+
+### Informal testing
+
+### Preserving your tests
+
+### Automating your test functions
+
+### Unit testing frameworks
+
+### Integration testing
