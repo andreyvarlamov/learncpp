@@ -923,3 +923,180 @@ predicted after seeing 624 generated numbers.
 If require the highest quality random results, need to use a 3rd part library.
 
 Xoshiro family, Wyrand: non-cryptographic; Chacha family: cryptographic (non-predictable).
+
+
+
+# 7.19 - Generating random numbers using Mersenne Twister
+
+`mt19937` - 32-bit unsigned integers
+
+`mt19937_64` - 64-bit unsigned integers
+
+```c++
+#include <iostream>
+#include <random>
+
+int main()
+{
+    std::mt19937 mt;
+
+    // Create a reusable rng that generates uniform nums b/w 1 and 6
+    std::uniform_int_distribution<> die6 { 1, 6 };
+
+    for (int count { 1 }; count <= 40; ++count)
+    {
+        //std::cout << mt() << '\t'; // unbound
+        std::cout << die6(mt) << '\t'; // roll between 1 and 6
+
+        if (count % 5 == 0)
+        {
+            std:: cout << '\n';
+        }
+    }
+
+    return 0;
+}
+
+```
+
+`mt()` is concise syntax for calling the function mt.operator()
+
+### The above program isn't as random as it seems
+Will print the same numbers every time. It is initialized with the same seed every time.
+The seed doesn't need to be necessarily random, but needs to be different every time the
+program is run.
+
+Two methods that are commonly used to generate seed:
+1. Use the system clock.
+2. Use the system's random device
+
+### Seeding with the system clock
+You will see `std::time()` in C and C++ a lot.
+
+In  C++ can use a function to get time in ticks.
+
+```c++
+...
+#include <chrono>
+
+int main()
+{
+    std::mt9337 mt { static_cast<unsigned int>(
+        std::chrono::stead_clock::now().time_since_epoch().count()
+        ) };
+
+    ...
+}
+```
+
+Downside: if the program is run several times in quick succession, the seeds generated for
+each run won't be that different, which can impact the quality of the random results from
+a statistical standpoint.
+
+`std::chrono::high_resolution_clock` is a popular choice instead of
+`std::chrono::stead_clock`. The former uses the most granular unit of time, but it may use
+the system clock, which can be changed or rolled back by users. The latter may have a less
+granular tick time, but is the only clock with a guarantee that users can not adjust it.
+
+### Seeding with the random device
+The random library contains a type called `std::random_device` - an implementation-defined
+PRNG. Normally we avoid implementation-defined capabilities because they have no
+guarantees about quality or portability, but this is one of the exception cases.
+
+Will ask the OS for a random number, but how it does this depends on the OS.
+
+```c++
+...
+std::mt199937 mt { std::random_device { }() };
+...
+```
+
+One potential problem with it is that it isn't required to be non-deterministic. It could,
+on some systems, produce the same sequence every time the program is run, which is exactly
+we're trying to avoid. E.g., there was a bug in MinGW (fixed in GCC 9.2) that would do
+this, making `std::random_device` useless.
+
+The latest versions of the most popular compilers (GCC/MinGW, Clang, Visual Studio)
+support proper implementations of it.
+
+> **Best practice**<br>
+> Use `std::random_device` to seed your PRNGs (unless it's not implemented properly for
+> your target compiler/architecture).
+
+`std::random_device { }()` is equivalent to
+
+```c++
+unsigned int func()
+{
+    std::random_device rd { }; // create a value initialized std::random_device object
+    return rd(); // return the result of operator() to the caller
+}
+```
+
+Because `std::random_device` is implementation defined, we can't assume much about it. It
+may be expensive to access it or it may cause our program to pause while waiting for more
+random numbers to become available. The pool of numbers that it draws from may also be
+depledted quickly, which would impact the random results for other applications requesting
+random numbers via the same method. For this reason, `std::random_device` is better used
+to seed other PRNGs rather than as an PRNG itself.
+
+### Only seed a PRNG once
+It's possible to reseed many PRNGs.
+
+Common mistake: re-initialize the PRNG every time it's called.
+
+### Random numbers across multiple functions
+Create a global random number generator and put it  in a namespace.
+
+```c++
+namespace Random
+{
+    std::mt19937 mt { std::random_device{}() };
+
+    int get(int min, int max)
+    {
+        std::uniform_int_distribution die { min, max };
+
+        return die(mt);
+    }
+}
+...
+```
+
+### Mersenne Twister and underseeding issues
+Internal state is 624 bytes, we're seeding using only a 32-bit int.
+
+Significant underseeding.
+
+`std::seed_seq` - can hold multiple seed values so we can use it to seed our PRNG with
+more than one value. Also, it will generate as many additional unbiased seed values as
+needed to initialize a PRNG's state. So if initialize with 32-bit of data, the function
+will generate 620 bytes of additional seed data. The results won't be great, but better
+than nothing.
+
+For better quality can do this:
+
+```c++
+...
+std::random_device rd;
+std::seed_seq ss { rd(), rd(), rd(), rd(), rd(), rd(), rd(), rd() }
+std::mt19937 mt { ss };
+```
+
+No reason not to do this at a minimum.
+
+Could also use random device to give 156 integers (624 bytes), but that may be slow, and
+risks depleting the pool of random numbers that `std::random_device` uses.
+
+[randutils.hpp](https://gist.github.com/imneme/540829265469e673d045) does
+[this](https://www.pcg-random.org/posts/ease-of-use-without-loss-of-power.html)
+
+### Warming up a PRNG
+When a PRNG is underseeded, the initial results of the PRNG may not be high quality. Some
+PRNGs benefit from being "warmed up". Discard first N results. Typically a few hundred to
+a few thousand initial results are discarded. The longer the period, the more initial
+results should be discarded.
+
+### Debugging programs that use random numbers
+When debugging it's useful to seed PRNG with a specific value that causes the erroneous
+behavior to occur.
