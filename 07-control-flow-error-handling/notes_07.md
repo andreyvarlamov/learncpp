@@ -311,3 +311,34 @@ Dijkstra "Go To Statement Considered Harmful"
 Allows a programmer to jump around the code arbitrarily. --> Spaghetti code
 
 One notable exception is when you need to exit a nested loop but not the entire function.
+
+
+
+# 7.7 - Introduction to loops and while statements
+
+### While statements
+
+```
+while (condition)
+    statement;
+```
+
+When a while statement is executed, the condition is evaluated, if true, the associated
+statement executes; return to the top, repeat.
+
+### While statements that evaluate to false initially are skipped
+
+### Infinite loops
+`while(true)`
+
+### Intentional inifinite loops
+
+### Loop variables
+i.e. **counter**
+
+Should be signed. Especially if checking if it's greater than zero
+
+### Doing something every N iterations
+counter % N
+
+### Nested loops
