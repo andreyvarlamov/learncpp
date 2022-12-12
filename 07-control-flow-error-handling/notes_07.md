@@ -773,7 +773,9 @@ See `calculator.cpp`
 
 ### Preconditions, invariants and postconditions
 **Precondition** - condition prior to execution of some component
+
 **Invariant** - condition while some component is executing
+
 **Postcondition** - condition after the execution of some component
 
 ### Assertions
@@ -835,3 +837,89 @@ Because it is evaluated by the compiler, the condition must be able to be evalua
 compile time.
 
 Can be placed anywhere in the code file (even in the global namespace).
+
+
+
+# 7.18 - Introduction to random number generation
+
+Computers are generally incapable of generating truly random numbers (at least through
+software). Instead, modern programs typically simulate randomness using an algorithm.
+
+### Algorithms and state
+**Algoritm** - finite sequence of instructions to be followed to produce some result.
+
+Algorithm is **stateful** if it retains some information across calls. **Stateless** -
+converse. **State** - current values held in stateful variables.
+
+**Deterministic**: same input - same output
+
+### Pseudo-random number generators (PRNGs)
+Algorithm that generates a sequence of numbers whose properties simulate a sequence of
+random numbers.
+
+A very basic PRNG algorithm:
+
+```c++
+unsigned int LCG16()
+{
+    static unsigned int s_state { 5323 };
+
+    // Due to large constants and overflow, it would be
+    // hard to causally predict what the next number is going to be
+    s_state = 8253729 * s_state + 2396403;
+
+    return s_state % 32768;
+}
+```
+
+Not a very good PRNG, but most work similarly.
+
+### Seeding a PRNG
+Deterministic. Initial value (or sometimes set of values) - **random seed**.
+
+Most PRNGs that produce quality results use at least 16 bytes of state, if not
+significantly more. However, the size of the seed value can be smaller than the size of
+the state of the PRNG - **underseeded**.
+
+### What makes a good PRNG
+* Distribution uniformity (see `prng_histogram.cpp`)
+* Unpredictability. LCG16 would be trivially predictable by someone who is motivated.
+* Good dimensional distribituion of numbers. E.g. if it was all high numbers first and then
+  all low numbers that would not be good (even if it's still uniform and unpredictable).
+* PRNG should have a high period for all seeds.
+* PRNG should be efficient
+
+### There are many different kinds of PRNG algorithms
+[Wikipeda list here](https://en.wikipedia.org/wiki/List_of_random_number_generators)
+
+### Randomization in C++
+<random> header of the standard library.
+
+6 PRNG families as of C++20:
+
+| Type name               | Family                                | Period  | State size | Perf   | Qual   | Should use? |
+|-------------------------|---------------------------------------|---------|------------|--------|--------|-------------|
+| `minstd_rand` (`0`)     | Linear congruential generator         | 2^32    | 4 bytes    | Bad    | Awful  | No          |
+| `mt19937`(`_64`)        | Mersenne twister                      | 2^19937 | 2500 bytes | Decent | Decent | Probably    |
+| `ranlux24` (`48`)       | Subtract and carry                    | 10^171  | 96 bytes   | Awful  | Good   | No          |
+| `knuth_b`               | Shifted linear congruential generator | 2^31    | 1028 bytes | Awful  | Bad    | No          |
+| `default_random_engine` | Any of above (implementation defined) | Varies  | Varies     | ?      | ?      | No          |
+| `rand()`                | Linear congruential generator         | 2^31    | 4 bytes    | Bad    | Awful  | No          |
+
+No reason to use `knuth_b`, `default_random_engine` and `rand()` ( which is a random
+number generator provided for compatibility with C).
+
+As of C++20, the Mersenne Twister algorithm is the only PRNG that ships with C++ that has
+both decent performance and quality.
+
+[Test PRNG quality](https://pracrand.sourceforge.net/)
+
+[Pracrand output for all C++ PRNGs](https://arvid.io/2018/06/30/on-cxx-random-number-generator-quality/)
+
+### So we should use MT, right?
+For most applications it's fine. But by modern standard it is a bit outdated. Can be
+predicted after seeing 624 generated numbers.
+
+If require the highest quality random results, need to use a 3rd part library.
+
+Xoshiro family, Wyrand: non-cryptographic; Chacha family: cryptographic (non-predictable).
