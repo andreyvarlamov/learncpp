@@ -158,3 +158,62 @@ params. or explicitly cast the ambiguous argument(s).
 The compiler applies matching rules to each argument in turn. At least one argument
 matching better than all the other functions. E.g. numeric promotion is better than
 numeric conversion, etc.
+
+
+
+# 8.12 - Default arguments
+
+```c++
+#include <iostream>
+
+void print(int x, int y=4)
+{
+    std::cout << "x: " << x << '\n';
+    std::cout << "y: " << y << '\n';
+}
+
+int main()
+{
+    print(1, 2);
+    print(3);
+
+    return 0;
+}
+```
+
+### When to use default arguments
+Reasonable default value, but which can be overridden by the caller.
+
+**Optional parameter**. (However the term is also used to refer to several other types of
+parameters (including parameters passed by address, and parameters using std::optional),
+so recommended to avoid this term.)
+
+### Multiple default parameters
+
+> **Rule**<br>
+> Default arguments can only be provided for the rightmost parameters.
+
+### Default arguments can not be redeclared
+Once declared, a default argument can not be redeclared (in the same file). That means for
+a function with a forward declaration and a function definition, the default argument can
+be declared in either the forward declaration or the function definition, but not both.
+
+Best practice is to declare the default argument in the forward declaration and not in the
+function defintion, as the forwarded declaration is more likely to be seen by other files
+(particularly if it in a header file).
+
+### Default arguments and function overloading
+May be overloaded.
+
+But consider this case:
+
+```c++
+void print(int x);
+void print(int x, int y = 10);
+void print(int x, double y = 20.5);
+...
+print(1, 2); // wil resolve to print(int, int)
+print(1, 2.5); // will resolve to print(int, double)
+print(1); // ambiguous function call
+```
+
