@@ -65,7 +65,7 @@ int main()
 3. If no match is found via numeric promotion, the compiler tries to find a match by
    applying numeric conversions.
 
-```c+++
+```c++
 #include <string>
 
 void print(double)
@@ -273,4 +273,71 @@ Instead of `typename`, can be `class` keyword. No difference. Often see people u
 newer `typename`, because it makes it clear that the template type can be replaced by any
 type, not just class types.
 
-Refer to the function as max<T>
+Refer to the function as max\<T\>
+
+
+
+# 8.14 - Function template instantiation
+
+### Using a function template
+**template argument**
+
+```c++
+// max function above
+max<int>(1, 2);
+```
+
+The compiler will use our max<T> function template to create a function.
+
+**function template instantiation**. When due to a function call - **implicit
+instantiation**. An instantiated function - **function instance** or **template function**
+
+The compiler essentially clones the function template and replaces the template type with
+the actual type we specified.
+
+### Template argument deduction
+Do not need to specify the actual type -- instead can use **template argument deduction**.
+
+`max<>(1, 2)` or `max(1, 2)`
+
+The difference is that the former will only consider template function overloads, the
+latter will consider both template function overloads and non-template function overloads.
+
+> **Best practice**<br>
+> Favor the normal function call syntax when using function templates.
+
+### Function with non-template parameters
+
+```c++
+template <typename T>
+int someFcn(T x, double y) { ... }
+```
+
+### Instantiated functions may not always compile
+E.g. when type doesn't fit the usage of the template parameter within the function. Like
+trying to add 1 to a string.
+
+### Using function templates in multiple files
+The compiler needs to see the full definition of the template.
+
+Typically written in header files, where they can be #included into any code file that
+wants to use them.
+
+Not subject to the one-definition rule. Functions instantiated from function templates are
+implicitly inline.
+
+### Generic programming
+Template types are sometimes called **generic types**.
+
+### Conclusion
+
+Drawbacks:
+
+* While compact to wrtie, they can expand by the compiler into a crazy amount of code,
+  which can lead to code bloat and slow compile times, because the compiler will create
+  and compile a function for each function call with a unique set of argument types.
+* Tend to produce crazy-looking, borderline unreadable error messages.
+
+> **Best practice**<br>
+> Use function templates to write generic code that can work with a wide variety of types
+> whenever you have the need.
