@@ -261,3 +261,41 @@ If these conditions not met -> compile error.
 
 > **Best practice**<br>
 > Use function overloading to make your program simpler.
+
+
+
+# 8.10 - Function overload differentiation
+
+### How overloaded functions are differentiated
+By number of params, type of params. Not by return type.
+
+For member functions, additional function-level qualifiers are also considered: const or
+volatile, Ref-qualifiers.
+
+### Overloading based on number of parameters
+
+### Overloading based on type of parameters
+...
+
+Note:
+
+```c++
+typedef int Height;
+using Age = int;
+
+void print(int value);
+void print(Age value); // not differentiated from print(int)
+void print(Height value); // not differentiated from print(int)
+```
+
+### The return type of a function is not considered for differentiation
+
+### Type signature
+Parts of the function header that are used for differentiation of the function. In C++:
+function name, num of params, param type, function-level qualifiers. Does *not* ihnclude
+the return type.
+
+### Name mangling
+When the compiler compiles a function, it performs **name mangling**. The compiled name of
+the function is altered based on various criteria, so that linker has unique names to work
+with. Different compilers - different mangled names.
