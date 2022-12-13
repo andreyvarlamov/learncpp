@@ -73,3 +73,52 @@ one, or more than one standard conversions in the conversion process.
 How do you have a type conversion with zero conversions? E.g. architectures where `int`
 and `long` both have the same size and range. Therefore, no actual conversion is needed to
 convert a value between those types, the value can simply be copied.
+
+
+
+# 8.2 - Floating-point and integral promotion
+
+*The number of bits a data type uses is called its width*
+
+Want 32-bit CPU to modify an 8-bit value (such as a `char`) or a 16-bit value? Some 32 bit
+CPUs (such as x86) can manipulate 8-bit or 16-bit values directly. However, doing so is
+often slower than manipulating 32-bit values.
+
+### Numeric promotion
+Because C++ is designed to be portable and performant across a wide range of
+architectures, don't want to assume a given CPU would be able to efficiently manipulate
+values that were narrower than the natural data size for that CPU.
+
+To help address this challenge - **numeric promotion** - type conversion of a narrower
+numeric type (such as `char`) to a wider numeric type (such as `int` or `double`) that can
+be processed efficiently and is less likely to have a result that overflows.
+
+All numeric promotions are **value-preserving** - no loss of data or precision. Safe, the
+compiler will freely use numeric promotion as needed, and will not issue a warning when
+doing so.
+
+### Numeric promotion reduces redundance
+I.e. function versions for different types.
+
+### Numeric promotion categories
+`integral promotions` and `floating point promotions`.
+
+### Floating point promotions
+Easier.
+
+### Integral promotions
+More complicated.
+
+Using integral promotion rules, the following conversions can be made:
+* signed char or signed short -> int
+* `unsigned char`, `char8_t`, `unsigned short` -> int if int can hold the entire range of
+  the type, or unsigned int otherwise.
+* if char is signed by default, it follows the signed char conversion rules above. If it
+  is unsigned by default, it follows the unsigned char conversion rules above.
+* bool can be converted to int, with false becoming 0 and true becoming 1.
+
+### Not all value-preserving conversions are numeric promotions.
+Some value-preserving type conversions (e.g. `char` -> `short`; `int` -> `long` or `int ->
+`double`) are not considered to be numeric promotions in C++ (they are *numeric
+conversions*). This is because such conversions do not assist in the goal of converting
+smaller types to larged types that can be processed more efficiently.
