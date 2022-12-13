@@ -280,3 +280,49 @@ std::cout << typeid(a + b).name() << a + b << '\n';
 > **Warning**<br>
 > This is one of the primary reasons to avoid unsigned integers -- mix with signed ints 
 > and get unexpected results. The compiler probably won't even issue a warning.
+
+
+
+# 8.5 - Explicit type conversion (casting) and static\_cast
+
+`double d = 10 / 4; // -> d = 2.0`
+
+**Type casting operators** (**casts**) -> **explicit type conversion**
+
+### Type casting
+C++ supports 5 different types of casting: `C-style casts`, `static casts`, `const casts`,
+`dynamic casts` and `reinterpret casts`. The latter four - **named casts**.
+
+`const casts` and `reinterpret casts` should generally be avoided because they are only
+useful in rare cases and can be harmful if used incorrectly.
+
+### C-style casts
+
+`int x{ 10 }; int y{ 4 }; (double) x / y` -> 2.5
+
+Although it appears to be a single cast, it can perform a variety of different conversions
+depending on context. This can include a `static cast`, a `const cast` or a `reinterpret
+case`. The latter of the two should be avoided.
+
+> **Best practice**<br>
+> Avoid using C-style casts.
+
+### static\_cast
+
+`char c{ 'a' }; static_cast<int>(c)` -> 97
+
+Best used to convert one fundamental type into another.
+
+The main advantage of `static_cast` is that it provides a compile-time type checking. Also
+intentionally less powerful than C-style casts, so you can't inadvertently remove `const`
+or do other things you may have not intended to do.
+
+> **Best practice**<br>
+> Favor static\_cast when you need to convert a value from one type to another type.
+
+### Using static\_cast to make narrowing conversions explicit
+Explicitly tell the compiler that this conversion is intended, and we accept
+responsibility for the consequences (e.g. overflowing the range of a `char` if that
+happens). Since the output of this `static_cast` is (e.g.) of type `char`, the
+initialization of (e.g.) variable `ch` doesn't generate any type mismatches, and hence no
+warnings or errors.
