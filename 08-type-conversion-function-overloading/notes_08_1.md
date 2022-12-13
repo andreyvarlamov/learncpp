@@ -1,4 +1,4 @@
-# 8 - TypeConversion and Function Overloading
+# 8 - Type Conversion and Function Overloading
 
 8.1-8.5
 -------
@@ -213,3 +213,70 @@ Converting from a floating point to an integer works as long as the value fits w
 range of the integer, but any fractional values are lost.
 
 Compiler will generally warn you if you try to do something dangerous.
+
+
+
+# 8.4 - Arithmetic conversions
+
+```c++
+??? y { 2 + 3.5 };
+```
+
+### The operators that require operands of the same type
+
+* The binary arithmetic operators: +, -, \*, /, %
+* The binary relational operators, <, >, <=, >=, ==, !=
+* The binary bitwise arithmetic operators: &, ^, |
+* The conditional operator ?: (excluding the condition, which is expected to be of type
+  `bool`)
+
+### The usual arithmetic conversion rules
+The compiler has a prioritized list of types that look something like this:
+* long double (highest)
+* double
+* float
+* unsigned long long
+* long long
+* unsigned long
+* long
+* unsigned int
+* int (lowest)
+
+2 rules:
+* If the type of at least one of the operands is on the priority list, the operand with
+  lower priority is converted to the type of the operand with higher priority.
+* Otherwise (the type of neither operand is on the list), both operands are numerically
+  promoted.
+
+### Some examples
+
+```c++
+#include <typeinfo>
+...
+int i{ 2 };
+double d{ 3.5 };
+std::cout << typeid(i + d).name() << i + d << '\n';
+
+// double 5.5
+```
+
+```c++
+short a{ 4 };
+short b{ 5 };
+std::cout << typeid(a + b).name() << a + b << '\n';
+
+// int 9
+```
+
+### Signed and unsigned issues
+
+`unsigned int` operand has higher priority, so `int` operand will be converted to an
+`unsigned int`. Unexpected result.
+
+`5u - 10 = 4294967291`
+
+`-3 < 5u = true` -- -3 -> unsigned, overflows, converted to a large `unsigned int`.
+
+> **Warning**<br>
+> This is one of the primary reasons to avoid unsigned integers -- mix with signed ints 
+> and get unexpected results. The compiler probably won't even issue a warning.
