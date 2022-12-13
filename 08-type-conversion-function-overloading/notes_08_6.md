@@ -125,3 +125,57 @@ needs to be offset by some benefit to readability or comprehension.
 In some cases (such as with smart pointers, which we'll cover in a future chapter),
 obscuring the type information can also be harmful to understanding how the type should be
 expected to work.
+
+
+
+# 8.7 - Type deduction for objects using the auto keyword
+
+### Type deduction for initialized variables
+**Type deduction**, **type inference**.
+
+`auto d{ 5.0 };`
+
+Allows compiler to deduce the type of an object from its initializer.
+
+`auto y{ }; // invalid`
+
+### Type deduction drops const qualifiers
+
+```c++
+const int x{ 5 }; // x has type const int
+auto y{ x }; // y will be type int (const is dropped)
+
+const auto z{ x }; // z will be type const int (const is reapplied)
+```
+
+### Type deduction for string literals
+
+```c++
+auto s{ "Hello, world" }; // s will be type const char*
+```
+
+```c++
+#include <string>
+#include <string_view>
+
+int main()
+{
+    using namespace std::literals;
+
+    auto s1{ "goo"s }; //std::string
+    auto s2{ "moo"sv }; // std::string_view
+
+    return 0;
+}
+```
+
+### Type deduction benefits and downsides
+...
+
+Obscures an object's type information in the code.
+
+Overall the modern consensus is that type deduction is generally safe to use for objects,
+and doing so can help make your code more readable by de-emphasizing type information so
+the logic code stands out better.
+
+Use it, unless need to commit to a specific type.
