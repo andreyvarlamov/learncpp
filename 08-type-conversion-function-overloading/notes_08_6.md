@@ -222,3 +222,42 @@ auto add (auto x, auto y)
 Prior to C++20, this wouldn't compile. In C++20, the `auto` keyword was extended. This
 will compile. But this is not invoking type deduction. This `function templates` that was
 designed to actually handle such cases.
+
+
+
+# 8.9 - Introduction to function overloading
+
+```c++
+int add(int x, int y)
+{
+    return x + y;
+}
+
+double add(double x, double y)
+{
+    return x + y;
+}
+...
+```
+
+Functions can be overloaded so long as each overload function can be differentiated by the
+compiler. If an overloaded function can not be differentiated, a compile error will
+result.
+
+Because in C++, operators are just functions, they can also be overloaded. Later
+
+### Introduction to overload resolution
+
+When a function call is made to a function that has been overloaded, the compiler will try
+to match the function call to the appropriate overload based on the arguments used in the
+function call.
+
+### Making it compile
+
+1. Each overloaded function has to be differentiated from the others. 8.10
+2. Each call to an overloaded function has to resolve to an overloaded function. 8.11
+
+If these conditions not met -> compile error.
+
+> **Best practice**<br>
+> Use function overloading to make your program simpler.
