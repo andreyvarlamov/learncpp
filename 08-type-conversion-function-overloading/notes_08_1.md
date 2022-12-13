@@ -118,7 +118,98 @@ Using integral promotion rules, the following conversions can be made:
 * bool can be converted to int, with false becoming 0 and true becoming 1.
 
 ### Not all value-preserving conversions are numeric promotions.
-Some value-preserving type conversions (e.g. `char` -> `short`; `int` -> `long` or `int ->
+Some value-preserving type conversions (e.g. `char` -> `short`; `int` -> `long` or `int` ->
 `double`) are not considered to be numeric promotions in C++ (they are *numeric
 conversions*). This is because such conversions do not assist in the goal of converting
 smaller types to larged types that can be processed more efficiently.
+
+
+
+# 8.3 - Numeric conversions
+
+There are 5 basic types of numeric conversions
+
+1. Converting an integral type to any other integral type (excluding integral promotions):
+
+```c++
+short s = 3; // convert int to short
+long l = 3; // convert int to long
+char ch = 3; // convert short to char
+```
+
+2. Converting a floating point type to any other floating point type (excluding floating
+   point promotions):
+
+```c++
+float f = 3.0; // convert double to float
+long double ld = 3.0; // convert double to long double
+```
+
+3. Converting a floating point type to any integral type:
+
+```c++
+int i = 3.5; // convert double to int
+```
+
+4. Converting an integral type to any floating point type:
+
+```c++
+double d = 3; // convert int to double
+```
+
+5. Converting an integral type or a floating point type to a bool:
+
+```c++
+bool b1 = 3; // convert int to bool
+bool b2 = 3.0; // convert double to bool
+```
+
+> Note<br>
+> Because brace initialization disallows some numeric conversions, we use copy
+> initialization in this lesson (which does not have such limitations) in order to keep
+> the examples simple.
+
+### Narrowing conversions
+May or may not result in data or precision loss.
+
+* Floating point type -> integral type
+* Wider floating point type -> narrower floating point type, unless the value being
+  converted is constexpr and is in range of the destination type (even if the narrower
+  type doesn't have the precision to store the whole number).
+* From an integral to a floating point type, unless the value being converted is constexpr
+  and is in range of the destination type and can be converted back into the original type
+  without data loss.
+* From a wider integral type to a narrower integral type, unlees the value being converted
+  is constexpr and after integral promotion will fit into the destination type.
+
+Compiler will usually issue a warning (or error) when it determines that an implicit
+narrowing conversion is required.
+
+> **Warning**<br>
+> Compilers will often not warn when converting a signed int to an unsigned int and
+> vice-versa, even though these are the narrowing conversions. Be careful.
+
+> **Best practice**<br>
+> In general, narrowing conversions should be avoided, but there are situational cases
+> where you might need to do one. In such cases, you should make the implicit narrowing
+> conversion explicit by using `static_cast`.
+
+### Brace initialization disallows narrowing conversions.
+
+### More on numeric conversions
+In all cases, converting a value into a type whose range doesn't support that value will
+lead to results that are probably unexpected.
+
+Converting from a larger integral or floating point type to a smaller type from the same
+family will generally work so long as the value fits in the range of the smaller type.
+
+In the case of floating point values, some rounding may occur due to a loss of precision
+in the smaller type.
+
+Converting from an integer to a floating point number generally works as long as the value
+fits within the range of the floating point type.
+
+Converting from a floating point to an integer works as long as the value fits within the
+range of the integer, but any fractional values are lost.
+
+Compiler will generally warn you if you try to do something dangerous.
