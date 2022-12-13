@@ -341,3 +341,84 @@ Drawbacks:
 > **Best practice**<br>
 > Use function templates to write generic code that can work with a wide variety of types
 > whenever you have the need.
+
+
+
+# 8.15 - Function templates with multiple template types
+Type conversion is only done when resolving function overloads, not when performing
+template argument deduction. Intentional.
+
+### Use static\_cast to convert the arguments to matching types
+But awkward and hard to read.
+
+### Provide an actual type
+E.g.
+
+```c++
+max<double>(2, 3.5)
+```
+
+### Function templates with multiple template types
+
+```c++
+template<typename T, typename U>
+T max(T x, T u)
+{
+    return (x > y) ? x : y; // narrowing conversion problem here
+}
+```
+
+Problem: double takes precedence over int, so our conditional operator will return a
+double, but the function is defined as returning T. So the double will undergo a narrowing
+conversion to an int. A warning and possibly loss of data.
+
+A good use for an `auto` return type. Deduce what the return type should be from the
+return statement.
+
+```c++
+#include <iostream>
+
+template<typename T, typename U>
+auto max(T x, U y)
+{
+    return (x > y) ? x : y;
+}
+
+int main()
+{
+    std::cout << max(2, 3.5) << '\n';
+
+    return 0;
+}
+```
+
+### Abbreviated function templates (C++20)
+When the auto keyword is used as a parameter type in normal function, the compiler will
+automatically convert the function into a function template with each auto parameter
+becoming and independent template type parameter.
+
+Instead of:
+
+```c++
+template<typename T, typename U>
+auto max(T x, U y)
+{
+    return (x > y) ? x : y;
+}
+```
+
+This:
+
+```c++
+auto max(auto x, auto y)
+{
+    return (x > ) ? x : y;
+}
+```
+
+No concise way to use abbreviated function templates when you want more than one auto
+parameter of the same type.
+
+> **Best practice**<br>
+> Feel free to use abbrteviated function templates with a single auto parameter, or where
+> each auto parameter should be an independent type.
