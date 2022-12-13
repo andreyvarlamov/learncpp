@@ -179,3 +179,46 @@ and doing so can help make your code more readable by de-emphasizing type inform
 the logic code stands out better.
 
 Use it, unless need to commit to a specific type.
+
+
+
+# 8.8 - Type deduction for functions
+
+```c++
+auto add (int x, int y)
+{
+    return x + y;
+}
+```
+
+All return statements within the function must return values of the same type, otherwise -
+error.
+
+A major downside - such functions must be fully defined before they can be used (a forward
+declaration is not sufficient). Not enough information for the compiler to deduce the
+function/type. Typically only callable from within the file in which they are defined.
+
+> **Best practice**<br>
+> Favor explicit return types over function return type deduction for normal functions.
+
+### Trailing return type syntax
+
+```c++
+auto add (int x, int y) -> int
+{
+    return (x + y);
+}
+```
+
+### Type deduction can't be used for function parameter types
+
+```c++
+auto add (auto x, auto y)
+{
+    return x + y;
+}
+```
+
+Prior to C++20, this wouldn't compile. In C++20, the `auto` keyword was extended. This
+will compile. But this is not invoking type deduction. This `function templates` that was
+designed to actually handle such cases.
