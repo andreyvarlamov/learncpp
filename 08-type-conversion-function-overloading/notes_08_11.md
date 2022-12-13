@@ -217,3 +217,60 @@ print(1, 2.5); // will resolve to print(int, double)
 print(1); // ambiguous function call
 ```
 
+
+
+# 8.13 - Function tempalates
+
+E.g.
+
+```c++
+int max(int x, int y)
+{
+    return (x > y) ? x : y;
+}
+
+double max(double x, double y)
+{
+    return (x > y) ? x : y;
+}
+```
+
+The actual code is duplicated!
+
+### Introduction to C++ templates
+Simplify the process of creating functions (or classes) that can work with different data
+types.
+
+In a template, can use one or more placeholder types.
+
+Once a template is defined, the compiler can use the template to generate as many
+overloaded functions(or classes) as needed, each using different actual types.
+
+Templates can work with types that didn't even exist when the template was written.
+
+C++ std lib is full of template code.
+
+### Function templates
+Function-like definition that is used to generate one or more overloaded functions, each
+with a different set of actual types. Use placeholder types (**template types**) for any
+param types, return types, or types used in the function body that we want to be specified
+later.
+
+### Creating a templated max function
+Common convention to use single capital letters starting with T to represent template
+types.
+
+```c++
+template <typename T> // template parameter declaration. Needed because the compiler doesn't know what T is.
+T max(T x, T y)
+{
+    return (x > y) ? x : y;
+}
+```
+
+Instead of `typename`, can be `class` keyword. No difference. Often see people using
+`class`, but it's only because it was introduced into the language earlier. Prefer the
+newer `typename`, because it makes it clear that the template type can be replaced by any
+type, not just class types.
+
+Refer to the function as max<T>
