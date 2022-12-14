@@ -155,3 +155,150 @@ dereferencing the return value.
 > **Best practice**<br>
 > Prefer return by reference over return by address unlesss the ability to return
 > `nullptr` is important.
+
+
+
+# 9.12 - Type deduction with pointers, references, and const
+
+`auto` keyword.
+
+Will drop `const` (because it's copied).
+
+### Type deduction drops references
+Will also drop references. Just like with const, can reapply the reference.
+
+`std::string& getRef(); auto& ref2 { getRef() };`
+
+### Top-level const and low-level const
+A **top-level const** is a const qualifier that applies to an object itself.
+
+```c++
+const int x;
+int* const ptr;
+```
+
+A **low-level const** is a const qualifier that applies to the object being referenced or
+pointed to.
+
+```c++
+const int& ref;
+const int* ptr;
+```
+
+A reference to a const value is always a low-level const. A pointer can have either or
+both.
+
+When we say that type deduction drops const qualifiers, it only drops top-level consts.
+Low-level consts are not dropped.
+
+### Type deduction and const references
+If the initializer is a reference to const, the reference is dropped first (and then
+reapplied if applicable), and then any top-level const is dropped from the result.
+
+Can repply either or both.
+
+```c++
+#include <string>
+
+const std::string& getConstRef();
+
+int main()
+{
+    auto ref1 { getConstRef() }; // std::string
+    const auto ref2 { getConstRef() }; // const std::string
+
+    auto& ref3 { getConstRef() }; // const std::string&
+    // (if reapplying ref, have to reapply const too, or we would have a non-const ref to a const variable)
+    const auto& ref4 { getConstRef() }; // const std::string&
+
+    return 0;
+}
+```
+
+> **Best practice**
+> If you want a const reference, reapply the `const` qualifier even when it's not strictly
+> necessary.
+
+### Type deduction and pointers
+Unlike references, type deduction does not drop pointers. But we can still use asterisk in
+conjunction with pointer type deduction.
+
+### The difference between auto and auto\*
+With `auto*`, the pointer is reapplied, and the dudced type does not necessarily include a
+pointer. In most cases, the practical effect is the same.
+
+But:
+
+```c++
+#include <string>
+
+std::string* getPtr();
+
+int main()
+{
+    auto ptr3 { *getPtr() }; // std:string (already dereferenced)
+    auto* ptr4 { *getPtr() }; // does not compile, initializer is not a pointer
+
+    return 0;
+}
+```
+
+### Type deduction and const pointers
+
+Just like with references, only top-level const is dropped during pointer type deduction.
+
+Returning regular pointer:
+
+```c++
+#include <string>
+
+std::string* getPtr();
+
+int main()
+{
+    // Make whatever the deduced type is const
+    const auto ptr1 { getPtr() }; // std::string* const
+    auto const ptr1 { getPtr() }; // std::string* const
+
+    // Make the deduced pointer type a pointer to a const
+    const auto* ptr1 { getPtr() }; // const std::string*
+    // Make the deduced pointer type a const pointer
+    auto* const ptr1 { getPtr() }; // std::string* const
+}
+```
+
+Returning a const pointer to a const value
+
+```c++
+#include <string>
+
+const std::string* const getConstPtr();
+
+int main()
+{
+    // The top level const (the const on the pointer itself) is dropped
+    // The low leve const on the object being pointed to is not dropped.
+    auto ptr1 { getConstPtr() }; // const std::string*
+    auto* ptr2 { getConstPtr() }; // const std::string*
+
+    // The top level const is dropped, but we're reapplying it
+    // The low-level const on the object being pointed to is not dropped
+    auto const ptr3 { getConstPtr() }; // const std::string* const
+    const auto ptr4 { getConstPtr() }; // const std::string* const
+
+    // The top level const is dropped, but reapplied
+    auto* const ptr5 { getConstPtr() }; // const std::string* const
+    // The top level const is dropped. const applies const to the type being pointed to,
+    // but it is already const
+    const auto* ptr6 { getConstPtr() }; // const std::string*
+
+    // error: const qualifier can not be applied twice
+    const auto const ptr7 { getConstPtr() };
+    // Applying const on both sides of the pointer. Allowed, since auto* must be a pointer type.
+    const auto* const ptr8 { getConstPtr() }; // const std::string* const
+}
+```
+
+> **Best practice**<br>
+> If you want a const pointer, reapply the const qualifier, even when it's not strictly
+> necessary. Makes your intent clear and helps prevent mistakes.
