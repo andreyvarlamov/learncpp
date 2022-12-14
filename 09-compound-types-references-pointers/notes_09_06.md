@@ -214,3 +214,57 @@ The pointer itself cannot be changed, but we can change the value being to.
 ```c++
 const int* const ptr { &x };
 ```
+
+
+
+# 9.9 - Pass by address
+
+With **pass by address**, instead of providing an object as an argument, the caller
+provides an object's address (via a pointer). The pointer argument is copied into a pointer
+parameter of the called function.
+
+```c++
+void print_by_address(const std::string* ptr)
+{
+    std::cout << *ptr << '\n';
+}
+
+std::string str { "Hello, world!" };
+print_by_address(&str);
+```
+
+### Pass by address does not make a copy of the object being pointed to
+
+### Pass by address allows the function to modify the argument's value
+If non-const
+
+### Null checking
+When passsing a parameter by address, care should be taken to ensure the pointer is not a
+null pointer before you dereference the value.
+
+```c++
+void print(int* ptr)
+{
+    if (ptr)
+    {
+        std::cout << *ptr;
+    }
+}
+```
+
+Or test as a precondition in the beginning of a function.
+
+Assert can also be used. `assert(ptr)`.
+
+### Prefer pass by (const) reference
+An object being passed by address must have an address, so only lvalues can be passed by
+adress (as rvalues don't have addresses). Pass by const reference is more flexible, it can
+accept both lvalues and rvalues.
+
+The syntax for pass by reference is more natural.
+
+In modern C++, most things that can be done with pass by address are better accomplished
+through other methods.
+
+> **Best practice**<br>
+> Pass by reference when you can, pass by address when you must.
