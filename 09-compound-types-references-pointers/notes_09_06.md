@@ -77,7 +77,7 @@ std::cout << *ptr << '\n'; // use dereference operator to print the value at the
 // that ptr is holding (x's address)
 ```
 
-[Conceptually](https://www.learncpp.com/images/CppTutorial/Section6/6-Pointer.png?ezimgfmt=rs:409x145/rscb2/ng:webp/ngcb2)
+![Conceptually](https://www.learncpp.com/images/CppTutorial/Section6/6-Pointer.png?ezimgfmt=rs:409x145/rscb2/ng:webp/ngcb2)
 
 This is where the pointers get their name fro -- ptr is "pointing to" x.
 
