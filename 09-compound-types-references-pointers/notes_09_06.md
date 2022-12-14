@@ -268,3 +268,74 @@ through other methods.
 
 > **Best practice**<br>
 > Pass by reference when you can, pass by address when you must.
+
+
+
+# 9.10 - Pass by address (part 2)
+
+### Pass by address for "optional" arguments
+
+```c++
+void greet(std::string* name=nullptr)
+{
+    std::cout << "Hello ";
+    std::cout << (name ? *name : "guest") << "\n";
+}
+```
+
+However, in many cases, function overloading is a better alternative. Number of
+advantages: no longer need to worry about null dereferences, could pass in a string
+literal if we wanted to.
+
+### Changing what a pointer parameter points at
+
+```c++
+void nullify([[maybe_unused]] int* ptr2)
+{
+    ptr2 = nullptr;
+}
+```
+
+Has no impact on the address held bey the argument. A copy of the address is passed in.
+
+### Pass by address ... by reference?
+
+```c++
+void nullify(int*& refptr)
+{
+    refptr = nullptr;
+}
+```
+
+Will modify the original pointer.
+
+### Why using `0` and `NULL` is no longer preferred
+`0` can be interpreted as either an integrral literal or a null pointer literal. Can cause
+unintended consequences to the behavior of our program.
+
+The definition of preprocessor macro `NULL` is not defined by the language standard. Can
+be defined as `0`, `0L`, `((void*)0), or something else entirely.
+
+This can cause issues with overloaded functions. When passing integer value `0` as a
+parameter, the compiler will prefer `print(int)` over `print(int*)`.
+
+### std::nullptr\_t
+Since `nullptr` can be differentiated from integer values in function overloads, it must
+have a different type. The type is `std::nullptr_t` (defined in header <cstddef>).
+
+But pointers will not implicitly convert to a `std::nullptr_t`, they will stay as (e.g.)
+`int*`, even when assigned null. So that doesn't work for function overloading, because it
+matches on types, not values.
+
+### There is only pass by value
+While the compiler can often optimize references away entirely, there are cases where this
+is not possible, and a reference is actually needed. References are normally implemented
+by the compiler using pointers. So behind the scenes, pass by reference is essentially
+just a pass by address.
+
+As mentioned previously, the pass by address just copies an address from the caller to the
+called function -- which is just passing an address by value.
+
+Therefore, C++ really passes everything by value. The properties of pass by address (and
+reference) come solely from the fact that we can dereference the passed address to change
+the argument.
