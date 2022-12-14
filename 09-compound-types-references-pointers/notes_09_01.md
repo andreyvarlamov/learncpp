@@ -270,3 +270,141 @@ destroyed) within a single expression. They have no scope at all (this makes sen
 scope is a property of an identifier, and temporary objects have no identifier).
 
 ### Const references bound to temporary objects extend the lifetime of the temporary object
+
+
+
+# 9.5 - Pass by lvalue reference
+*Pass by value* - an argument passed to a function is coped into the function's parameter.
+E.g.:
+
+```c++
+void print_value(int y) { ... }
+
+int x { 2 };
+print_value(x);
+```
+
+`x` is copied into parameter `y`, then at the end of the function, object `y` is
+destroyed.
+
+### Some objects are expensive to copy
+Most of the types provided by the standard library (such as `std::string`) are *class
+types*. Usually expensive to copy.
+
+```c++
+void print_value(std::string y) { ... }
+
+std::string x { "Hello, world" };
+print_value(x);
+```
+
+This time, `std::string` is a class that is expensive to copy.
+
+### Pass by reference
+
+```c++
+void print_value(std::string& y) { ... }
+
+std::string x { "Hello, world" };
+print_value(x);
+```
+
+No copy is made, lvalue reference paramter `y` is bound to argument `x`. Always
+inexpensive.
+
+### Pass by reference allows us to change the value of an argument
+This can be useful.
+
+### Pass by reference to non-const can only accept modifiable lvalue arguments
+
+### Pass by const reference
+
+```c++
+void print_value(const std::string& y) { ... }
+
+std::string x { "Hello, world" };
+print_value(x);
+```
+
+Guarantee the function can not change the value being referenced.
+
+In most cases, we don't want our functions modifying the value of arguments.
+
+> **Best practice**
+> Favor const ref, unless there's a specific reason not to.
+
+Now we understand the motivation for allowing const lvalue references to bind to rvalues.
+
+### Mixing pass by value and pass by reference
+
+### When to pass by reference
+> **Best practice**<br>
+> Because class types can be expensive to copy (sometimes significantly so), class types are
+> usuallly passed by const reference instead of by value to avoid making an expensive copy
+> of the argument. Fundamental types are cheap to copy, so they are typically passed by
+> value.
+
+### The cost of pass by value vs pass by reference (advanced)
+So why not pass everything by reference?
+
+Two key points that will help us understand when we should pass by value vs pass by
+reference.
+
+1. The cost of copying an object is generally proportional to 2 things:
+
+   * The size of the objects
+   * Any additional setup costs. Some class types do additional setup when they are
+     instantiated (e.g. opening a file or database, or allocating a certain amount of
+     dynamic memory to hold an object of a variable size). This cost must be paid each
+     time when an object is copied
+
+   On the other hand, binding a reference to an object is always fast (about the same
+   speed as copying a fundamental type).
+
+2. Accessing an object through a reference is slightly more expensive than accessing an
+   object through a normal variable identifier.
+
+   With a variable identifier, the running program can just go the memory address assigned
+   to that variable and access the value directly.
+
+   With a reference, there usually is an extra step: the program must first access the
+   reference to determine which object is being referenced, and only then can it go to that
+   memory address for that object and access the value.
+
+   The compiler can also sometimes optimize code using objects passed by value more highly
+   than code using objects passed by reference. This means code generated to access objects
+   passed by reference is typically slower than the code generated for objects passed by
+   value.
+
+> **Best practice**<br>
+> * For objects that are cheap to copy, the cost of copying is simiilar to the cost of
+>   binding, so  we favor pass by value so the code generated will be faster.
+>
+> * For objects that are expensive to copy, the cost of the copy dominates, so we favor pass
+>   by (const) reference to avoid making a copy.
+
+Cost of copy varies by compiler, use case and architecture. An object is cheap to copy if
+it uses 2 or fewer "words" of memory (where "word" is approximated by the size of a memory
+address) and it has no setup costs.
+
+This program defines a macro that can be used to determine if a type uses 2 or fewer
+memory addresses worth of memory.
+
+```c++
+#define is_small(T) (sizeof(T) <= 2 * sizeof(void*))
+
+struct S
+{
+    double a, b, c;
+};
+
+is_small(int); // true
+is_small(double); // true
+is_small(S); // false
+```
+
+Note: we use a preprocessor macro here so that we can substitute in a type (normal
+functions disallow this).
+
+It's best to assume that most standard library claseses have setup costs, unless you know
+otherwise that they don't.
