@@ -122,4 +122,62 @@ a pointer would be 64 bits (8 bytes).
 Holding the address of an object that is no longer valid (e.g. has been detroyed).
 Dereferencing it - undefined results.
 
-### Conclusion
+
+
+# 9.7 - Null pointers
+
+### Null pointers
+Besides a memory address, there is one additional value that a pointer can hold: a null
+value. A **null value** (often shortened to **null**) is a special value that means
+something has no value.
+
+When a pointer is holding a null value, it means it's not pointing to anything.
+
+`int* ptr { };`
+
+> **Best practice**<br>
+> Value initializae your pointers (to be null pointers) if you are not initializing them
+> with the address of a valid object.
+
+### The nullptr keyword
+
+`nullptr` - null pointer literal.
+
+`int* ptr { nullptr };
+
+### Dereferencing a null pointer results in undefined behavior
+A null pointer doesn't have an address.
+
+Accidentally derefercing null and dangling pointers is one of the most common reasons that
+C++ programs crash in practice.
+
+### Checking for nullpointers
+
+`ptr == nullptr`
+
+Pointers will implicitly convert to booleans: a null pointer converts to `false`.
+
+> **Warning**<br>
+> Conditionals can only be used to differentiate null pointers from non-null pointers.
+> There is no convenient way to deteremine whether a non-null pointer is pointing to a
+> valid object or dangling.
+
+### Use nullptr to avoid dangling pointers
+Ensure that any pointer that is not pointing at a valid object is set to `nullptr`.
+
+But dangling pointers are not nulled automatically! Programmer's responsibility to ensure
+that all pointers to an object that has just been destroyed are properly set to `nullptr`.
+
+### Legacy null pointer literals: 0 and NULL
+On modern architectures, the address 0 is typically used to represent a null pointer.
+However, the value is not guaranteed by the C++ standard, and some architectures use other
+values. The literal 0, when used in context of a null pointer, will be translated into
+whatever address the architecture uses to represent a null pointer.
+
+Additionally preprocessor macro `NULL` defined in the <cstddef> header. Inherited from C.
+
+Should be avoided in modern C++.
+
+### Favor references over pointers whenever possible
+Pointers are inherently dangerous. References cannot be bound to null, and have to be
+bound to a valid object upon creation and cannot be reseated.
