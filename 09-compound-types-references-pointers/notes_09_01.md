@@ -228,3 +228,45 @@ int& ref2 { ref1 }; // an lvalue reference bound to var
 A reference to a reference (e.g. an `int&`) would have syntax `int&&`, but since C++
 doesn't support references to references, this syntax was repurposed in C++11 to indicate
 an rvalue reference.
+
+
+
+# 9.3 - Lvalue references to const
+
+```c++
+const int x { 5 };
+int& ref { x };
+```
+
+Disallowed because it would allow us to modify a const variable through the non-const
+reference.
+
+### Lvalue reference to const
+
+```c++
+const int x { 5 };
+const int& ref { x };
+```
+
+^ allowed.
+
+Can be accessed but not modified
+
+### Initializing an lvalue reference to const with a modifiable lvalue
+Can also bind to modifiable values. In such a case, the object being referenced is treated
+as const when accessed through the reference, even though the underlying object is
+non-const.
+
+> **Best practice**<br>
+> Favor *lvalue references to const* over *lvalue references to non-const*, unless you
+> need to modify the object being referenced.
+
+### Initializing an lvalue reference to const with an rvalue
+Allowed. When this happens, a temporary object is created and initialized with the rvalue,
+and the reference to const is bound to that temporary object.
+
+A **temporary object** (**anonymous object**) - created for temporary use (and then
+destroyed) within a single expression. They have no scope at all (this makes sense, since
+scope is a property of an identifier, and temporary objects have no identifier).
+
+### Const references bound to temporary objects extend the lifetime of the temporary object
