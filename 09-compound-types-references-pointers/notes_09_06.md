@@ -143,7 +143,7 @@ When a pointer is holding a null value, it means it's not pointing to anything.
 
 `nullptr` - null pointer literal.
 
-`int* ptr { nullptr };
+`int* ptr { nullptr };`
 
 ### Dereferencing a null pointer results in undefined behavior
 A null pointer doesn't have an address.
@@ -181,3 +181,36 @@ Should be avoided in modern C++.
 ### Favor references over pointers whenever possible
 Pointers are inherently dangerous. References cannot be bound to null, and have to be
 bound to a valid object upon creation and cannot be reseated.
+
+
+
+# 9.8 - Pointers and const
+
+```c++
+const int x { 5 };
+int* ptr { &x };
+```
+
+This won't compile.
+
+### Pointer to const value
+
+```c++
+const int x { 5 };
+const int* ptr { &x };
+```
+
+The value being pointed to can't be changed. However because a pointer to const is not
+itself, we can change what the pointer is pointing to. Can point to non-const variables
+too. Treat that value as constant, regardless of whether the object at that address was
+initially defined as const or not.
+
+### Const pointers
+Make pointer itself constant: `int* const ptr { &x };`
+
+The pointer itself cannot be changed, but we can change the value being to.
+
+### Const pointer to a const value
+```c++
+const int* const ptr { &x };
+```
