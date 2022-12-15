@@ -431,3 +431,40 @@ constexpr std::string_view getColor(Color color)
 
 ...
 ```
+
+
+
+# 10.5 - Introduction to structs, members and member selection
+Structs and classes (soon).
+
+A **struct** (short for structure) is a program-defines data type that allows us to bundle
+multiple variables together into a single type.
+
+### Defining structs
+
+```c++
+struct Employee
+{
+    int id { };
+    int age { };
+    double wage { };
+};
+```
+
+**Data members** or **member variables**
+
+### Defining struct objects
+```c++
+Employee joe;
+```
+
+### Accessing members
+**Member selection operator**.
+
+```c++
+Employee joe;
+
+joe.age = 32;
+
+std::cout << joe.age << '\n';
+```
