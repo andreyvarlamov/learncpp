@@ -463,3 +463,126 @@ reason why changing an array in a function changes the actual array argument pas
 When the whole struct or class is passed to a function. This yields a useful way to
 prevent decay if desired, and will be valuable later when we write classes that utilize
 arrays.
+
+
+
+# 11.9 - Pointer arithmetic and array indexing
+
+### Pointer arithmetic
+The C++ language allows you to perform integer addition or subtraction operations on
+pointers. If `ptr` points to an integer, `ptr + 1` is the address of the next integer in
+memory after `ptr`. `ptr - 1` - previous.
+
+Not the *memory address* after `ptr`, but the memory address of the *next object of the
+type* that `ptr` points to. If `ptr` points to an integer (assuming 4 bytes), `ptr + 3`
+means 3 integers (12 bytes) after `ptr`. `char` (1 byte) - 3 chars (3 bytes).
+
+When calculating the result of a pointer arithmetic expression, the compiler always
+multiplies the integer operand by the size of the object being pointed to - **scaling**.
+
+### Arrays are laid out sequentially in memory
+
+### Pointer arithmetic, arrays, and the magic behind indexing
+
+```c++
+#include <iostream>
+
+int main()
+{
+    int array[] { 9, 7, 5, 3, 1 };
+
+    std::cout << &array[1] << '\n'; // 0017FB80 - memory address of array element 1
+    std::cout << array + 1 << '\n'; // 0017FB80 - memory address of array pointer + 1
+
+    std::cout << array[1] << '\n'; // 7
+    std::cout << *(array + 1) << '\n'; // 7
+
+    return 0;
+}
+```
+
+It turns out that when the compiler sees the subscript operator `[]`, it actually
+translates that into a pointer addition and indirection!
+
+`array[n]` is the same as `*(array + n)`
+
+### Using a pointer to iterate through an array
+For loop, pointer addition and indirection
+
+```c++
+char name[] { "Mollie" };
+int arrayLength { ... };
+...
+for (char* ptr { name }; ptr != (name + arrayLength); ++ptr)
+...
+```
+
+Because counting elements is common, the algorithms library offers `std::count_if` which
+counts elements that fulfill a condition.
+
+```c++
+#include <algorithm> // std::count_if
+#include <iostream>
+#include <iterator> // for std::begin and std::end
+
+bool isVowel(char ch)
+{
+    ...
+}
+
+int main()
+{
+    char name[] { "Mollie" };
+
+    auto numVowels { std::coung_if(std::begin(name), std::end(name), isVowel) };
+
+    std::cout << name <, " has " << numVowels << " vowels.\n";
+
+    return 0;
+}
+```
+
+`std::begin` returns an iterator (pointer) to the first element, while `std::end` returns
+an iterator to the element that would be one after the last. The iterator returned by
+`std::end` is only used as a marker, accessing it causes undefined behavior, because it
+doesn't point to a real element.
+
+`std::begin` and `std::end` only work on arrays with a known size. If the array decayed to
+a pointer, we can calculate begin and end manually.
+
+```c++
+// nameLength is the number of elements in the array.
+std::counf_if(name, name + nameLength, isVowel);
+
+// Don't do this. Accessing invalid indexes causes undefined behavior.
+std::counf_if(name, &name[nameLength], isVowel);
+```
+
+----
+
+The order of operands of subscript operator can be swapped (same as addition and
+indirection).
+
+```c++
+arr[2]
+// same as
+*(arr + 2)
+// same as
+*(2 + arr)
+// same as
+2[arr]
+```
+
+----
+
+See `find_value.cpp` for the Quiz Q2.
+
+`std::find` is a standard function that does the same thing as `findValue()`. It should be
+preferred over writing your own.
+
+```c++
+#include <algorithm>
+...
+auto found { std::found(std::begin(arr), std::end(arr), 20) };
+...
+```
