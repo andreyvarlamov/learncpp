@@ -331,3 +331,135 @@ std::cout << (std::string { v } + s) << '\n';
 std::cout << (s + static_cast<std::string>(v)) << '\n';
 std::cout << (static_cast<std::string>(v) + s) << '\n';
 ```
+
+
+
+# 11.8 - Pointers and arrays
+
+### Array decay
+In all but two cases when a fixed array is used in an expression, the fixed array will
+**decay** (be implicitly converted) into a pointer that points to the first element of the
+array.
+
+```c++
+#include <iostream>
+
+int main()
+{
+    int array[5] { 9, 7, 5, 3, 1 };
+
+    std::cout << "Element 0 has address: " << &array[0] << '\n';
+    std::cout << "The array decays to a pointer holding address: " << array << '\n';
+
+    return 0;
+}
+```
+
+Should be the same address.
+
+However, it's a common fallacy in C++ to believe an array and a pointer to the array are
+identical. They're not. In the above case, array is of type `int[5]`, and its "value" is
+the array elements themselves. A pointer to the array would be of type `int*`, and its
+value would be the addresss of the first element of the array.
+
+All elements can still be accessed through the pointer, but information derived from the
+array's type (such as how long the array is) can not be accessed from the pointer.
+
+However, this effectively allows us to treat fixed arrays and pointers identically in most
+cases.
+
+```c++
+int array[5] { 9, 7, 5, 3, 1 };
+std::cout << *array; // 9
+
+char name[] { "Jason" };
+std::cout << *name <<'\n'; // J
+```
+
+Note that we're not actually dereferencing the array itself. The array (of type `int[5]`)
+gets implicitly converted into a pointer (of type `int*`), and we dereference the pointer
+to get the value at the memory address the pointer is holding (the value of the first
+element of the array).
+
+We can also assign a pointer to point at the array.
+
+### Differences between pointers and fixed arrays
+
+```c++
+#include <iostream>
+
+int main()
+{
+    int array[5] { 9, 7, 5, 3, 1 };
+    std::cout << sizeof(array) << '\n'; // sizeof(int) * array length
+
+    int* ptr { array };
+    std::cout << sizeof(ptr) << '\n'; // print the size of a pointer
+}
+```
+
+```c++
+#include <iostream>
+
+int main()
+{
+    int array[5] { 9, 7, 5, 3, 1 };
+    std::cout << array << '\n'; // type int[5], prints 009DF9D4
+    std::cout << &array << '\n'; // type int(*)[5], prints 009DF9D4
+
+    std::cout << '\n';
+
+    int* ptr { array };
+    std::cout << ptr << '\n'; // type int*, prints 009DF9D4
+    std::cout << &ptr << '\n'; // type int**, prints 009DF9C8
+
+    return 0;
+}
+```
+
+### Revisiting passing fixed arrays to functions
+When passing an array as an argument to a function, a fixed array decays into a pointer,
+and the pointer is passed into the function.
+
+```c++
+#include <iostream>
+
+void printSize(int* array)
+{
+    std::cout << sizeof(array) << '\n'; // 4
+}
+
+int main()
+{
+    int array[] { 1, 1, 2, 3, 5, 8, 13, 21 };
+    std::cout << sizeof(array) << '\n'; // 32
+
+    printSize(array);
+
+    return 0;
+}
+```
+
+Same thing happens even if the parameter is declared as a fixed array:
+
+```c++
+void printSize(int array[])
+...
+```
+
+Some programmers prefer using the [] syntax because it makes it clear that the function is
+expecting an array, not just a pointer value. However, in most cases, because the pointer
+doesn't know how large the array is, you'll need to pass in the array size as a separate
+parameter anyways (strings being an exception because they're null terminated).
+
+Recommended to use the pointer syntax, because it makes it clear that the parameter is
+being treated as a pointer, not a fixed array.
+
+### An intro to pass by address
+The fact that array decays into pointers when passed to a function explains the underlying
+reason why changing an array in a function changes the actual array argument passed in.
+
+### Arrays in structs and classes don't decay
+When the whole struct or class is passed to a function. This yields a useful way to
+prevent decay if desired, and will be valuable later when we write classes that utilize
+arrays.
