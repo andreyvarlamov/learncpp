@@ -269,3 +269,117 @@ Animal* ptr { &puma };
 ```
 
 Parentheses aren't necessary but help readability.
+
+
+
+# 10.10 - Class templates
+
+Remember the problem function templates intend to solve.
+
+### Aggregate types have similar challenges
+Can't even overload structs, would be erroneous redeclaration.
+
+### Class templates
+
+```c++
+#include <iostream>
+
+template <typename T>
+struct Pair
+{
+    T first { };
+    T second { };
+};
+
+int main()
+{
+    Pair<int> p1 { 5, 6 }; // instantiates Pair<int> and creates object p1
+    std::cout << p1.first << ' ' << p1.second << '\n';
+
+    Pair<double> p2 { 1.2, 3.4 }; // instantiates Pair<double> and creates object p2
+    std::cout << p2.first << ' ' << p2.second << '\n';
+
+    Pair<double> p3 { 7.8, 9.0 }; // creates object p3 using prior definition for Pair<double>
+    std::cout << p3.first << ' ' << p3.second << '\n';
+
+    return 0;
+}
+```
+
+What the compiler actually compiles after all template instnatiation is done.
+
+```c++
+#include <iostream>
+
+// A declaration for our Pair class template
+// (we don't need the definition any more since it's not used)
+template <typename T>
+struct Pair;
+
+// Explicitly define what Pair<int> looks like
+template <> // tells the compiler this is  a template type with no template parameters
+struct Pair<int>
+{
+    int first { };
+    int second { };
+};
+
+// Explicitly define what Pair<double> looks like
+template <> // tells the compiler this is  a template type with no template parameters
+struct Pair<double>
+{
+    double first { };
+    double second { };
+};
+
+...
+```
+
+### Using our class template in a function
+
+Because the compiler treats `Pair<int>` and `Pair<double>` as separate types, can use
+overloaded functions that are differentiated by parameter type.
+
+```c++
+constexpr int max(Pair<int> p)
+{
+    return (p.first > p.second ? p.first : p.second);
+}
+
+constexpr int max(Pair<double> p)
+{
+    return (p.first > p.second ? p.first : p.second);
+}
+```
+
+Or function template:
+
+```c++
+template <typename T>
+struct Pair
+{
+    T first { };
+    T second { };
+};
+
+template <typename T>
+constexpr T max(Pair<T> p)
+{
+    return (p.first > p.second ? p.first : p.second);
+}
+
+...
+```
+
+### Class types with template type and non-template type members
+
+### Clas templates with multiple template types
+
+### std::pair
+In the <utility> header. Defined identically to the `Pair` class template with multiple
+template types in the preceding section(s).
+
+### Using class templates in multiple files
+Just like function templates, class templates are typically defined in header files so
+they can be included into any code file that needs them. Both template definitions and
+type definitions are exempt from the one-definition rule.
