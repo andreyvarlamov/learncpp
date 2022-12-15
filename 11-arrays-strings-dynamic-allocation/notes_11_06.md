@@ -586,3 +586,101 @@ preferred over writing your own.
 auto found { std::found(std::begin(arr), std::end(arr), 20) };
 ...
 ```
+
+
+
+# 11.10 - C-style string symbolic constants
+C-style string symbolic constants using pointers:
+
+```c++
+const char* myName { "Andrey" };
+```
+
+While `char myName[] { ... }` and `const char* myName { ... }` operate and produce the
+same results, C++ deals with the memory allocation for these slightly differently.
+
+In the fixed array case, the program allocates memory for a fixed array of length 5, and
+initializes that memory with the string "Andrey\0". Because memory has been specifically
+allocated for the array, you're free to alter the contents of the array. The array itself
+is treated as a normal local variable, so when the array goes out of scope, the memory
+used by the array is freed for other uses.
+
+In the symbolic constant case, how the compiler handles this is implementation defined.
+What *usually* happens is that the compiler  places the string"Andrey\0" into read-only
+memory somewhere, and then sets the pointer to it. Because the memory may be read-only,
+the best practice is to make sure the string is const.
+
+For optimization purposes, multiple string literals may be consolidate into a single
+value. For example:
+
+```c++
+const char* name1 { "Andrey" };
+const char* name2 { "Andrey" };
+```
+
+These are two different string literals with the same value. The compiler may opt to
+combine these into a single shared strin gliteral, with both name1 and name2 pointed at
+the same address. Thus if name1 was not const, making a change to name1 could also impact
+name2 (which might not be expected).
+
+As a result of string literals being stored in a fixed location in memory, strin gliterals
+have static duration rather than automatic duration (that is, they die at the end of the
+program, not at the end of the block in which they are defined). This means that when we
+are using string literals, we don't have to worry about scoping issues. Thus the following
+is okay:
+
+```c++
+const char* getName()
+{
+    return "Andrey";
+}
+```
+
+getName will return a pointer to C-style string "Andrey". If this function were returning
+any oterh local variable by address, the variable would be destroyed at the end of
+getName(), and we'd return a dangling pointer back to the caller.
+
+C-style strings are used in a lot of old or low-level code, because they have a very small
+memory footprint. Modern code should favor the use of `std::string` and
+`str::string_view`.
+
+### std::cout and char pointers
+
+```c++
+#include <iostream>
+
+int main()
+{
+    int nArray[5] { 9, 7, 5, 3, 1 };
+    char cArray[] { "Hello!" };
+    const char* name { "Andrey" };
+
+    std::cout << nArray << '\n'; // nArray will decay to type int* -- 003AF738
+    std::cout << cArray << '\n'; // cArray will decay to type char* -- Hello!
+    std::cout << name << '\n'; // name is already type char* -- Andrey
+}
+```
+
+`std::cout` makes some assumptions about your intent. It will assume you're indending to
+print a string.
+
+This is great 99% of the time, but it can lead to unexpected results.
+
+```c++
+#include <iostream>
+
+int main()
+{
+    char c { 'Q' };
+    std::cout << &c;
+
+    return 0;
+}
+```
+
+```
+Q╠╠╠╠╜╡4;¿■A
+```
+
+`&c` has type `char*`. So the compiler assumed it was astring. It printed 'Q' and kept
+going until null terminator (it ran into some memory holding a 0 value).
