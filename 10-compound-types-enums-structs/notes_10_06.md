@@ -128,3 +128,92 @@ Prefer the latter, even when all members have default initializers
 But still not uncommon to use the former. The latter wasn't introduced until C++11, and
 there's a similar case (for non-aggregates) where default initialization can be more
 efficient (13.5 - Constructors).
+
+
+
+# 10.8 - Struct passing and miscellany
+
+### Passing structs (by reference)
+Can pass the entire struct to a function that needs to work with the members. Generally
+passed by (const) reference to avoid making copies.
+
+### Returning structs
+...
+
+Usually returned by value, so as not to return a dangling reference.
+```c++
+return Point3d { 0.0, 0.0, 0.0 };
+```
+
+When not using `auto`, can even omit the type in the return statement:
+```c++
+return { 0.0, 0.0, 0.0 };
+```
+
+Also:
+```c++
+return { }; // value-initialize all members
+```
+
+### Structs with program-defined members
+
+```c++
+#include <iostream>
+
+struct Company
+{
+    struct Employee
+    {
+        int id { };
+        int age { };
+        double wage { };
+    };
+
+    int numberOfEmployees { };
+    Employee CEO { };
+};
+
+int main()
+{
+    Company myCompany { 7, { 1, 32, 55000.0 } };
+    std::cout << myCompany.CEO.wage;
+}
+```
+
+### Struct size and data structure aligment
+Typically, the size of a struct is the sum of the size of all its members, but not always!
+
+*At least* as large as the size of all the variables it contains. For performace reasons,
+the compiler will sometimes add gaps into structures (**padding**).
+
+See [Data structure aligment](https://en.wikipedia.org/wiki/Data_structure_alignment).
+
+```c++
+#include <iostream>
+
+struct Foo1
+{
+    short a { };
+    short qq { };
+    int b { };
+    double c { };
+};
+
+struct Foo2
+{
+    short a { };
+    int b { };
+    double c { };
+    short qq { };
+};
+
+int main()
+{
+    std::cout << "The size of Foo1 is " << sizeof(Foo1) << '\n'; // 16
+    std::cout << "The size of Foo2 is " << sizeof(Foo2) << '\n'; // 24
+
+    return 0;
+}
+```
+
+See `fractions.cpp` - Quiz Q2
