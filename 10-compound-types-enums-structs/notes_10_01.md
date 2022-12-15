@@ -46,3 +46,72 @@ behavior will result.
     A class type or enumeration type defined yourself
 
     Fraction
+
+
+
+# 10.2 - Unscoped enumerations
+
+`enum` keyword
+
+```c++
+enum Color
+{
+    red,
+    green,
+    blue,
+};
+
+int main()
+{
+    Color apple { red };
+    Color shirt { green };
+    Color cup { blue };
+
+    Color socks { white }; // error: white is not an enumerator of Color
+    Color socks { 2 }; // error: 2 is not an enumerator of Color
+}
+```
+
+### Naming enumerations and enumerators
+> **Warning**<br>
+> Enumerations don't have to be named, but unnamed enumerations should be avoided in modern
+> C++.
+
+> **Best practice**<br>
+> Name your enumerated types starting with a capital letter. Name your enumerators
+> starting with a lower case letter.
+
+
+### Enumerated types are distint types
+
+### Putting enumerations to use
+
+...
+
+Many languages use enumerations to define Booleans -- after all, a Boolean is essentially
+just an enumeration with 2 enumerators. However, in C++, true and false are defined as
+keyword instead of enumerators.
+
+### The scope of unscoped enumerations
+Unscoped enumerations are named such because they put their enumerator names into the same
+scope as the enumeration definition itself.
+
+This pollutes the global scope and significantly raises the chance of naming collisions.
+
+Unscoped enumerations also provide a named scope region for their enumerators (much like a
+namespace acts as a named scope region for the names declared within).
+
+`Color::red`
+
+### Avoiding enumerator naming collisions
+1. Prefix with the name of the enumeration itself.
+
+2. Place the enumerated type inside something that provides a separate scope region. E.g.
+   a namespace. (It's also common to put enumerated types related to a class inside the
+   scope region of the class.) <- **Best practice**
+
+Or just use scoped enumerations.
+
+### Comparing against enumerators
+
+if-else and ==
