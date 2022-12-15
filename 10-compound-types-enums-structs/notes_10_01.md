@@ -290,3 +290,144 @@ std::istream& operator>>(std::istream& in, Pet &pet)
     return in;
 }
 ```
+
+
+
+# 10.4 - Scoped enumerations (enum classes)
+Problem: unscoped enumerations are distinct types in C++, but they are not type safe,
+allows to do thing that don't make sense.
+
+```c++
+enum Color
+{
+    red,
+    blue,
+};
+
+enum Fruit
+{
+    banana,
+    apple,
+};
+
+Color color { red };
+Fruit fruit { banana };
+
+// red == banana = true
+```
+
+The compiler will look to see if it know how to compaare a `Color` and a `Fruit`. It
+doesn't. Next it will try convertin `Color` and/or `Fruit` to integers to see if it can
+find a match. Eventually, the compiler sees that if it converts them both to ints, it can
+do the comparison.
+
+Because of this + namespace pollution problem, C++ designers determined that a cleaner
+solution for enumerations would be of use.
+
+### Scoped enumerations
+**Enum class**.
+
+```c++
+#include <iostream>
+int main()
+{
+    enum class Color
+    {
+        red,
+        blue,
+    };
+
+    enum class Fruit
+    {
+        banana,
+        apple,
+    };
+
+    Color color { Color::red }; // red is not directly accessible; have to use Color
+    Fruit fruit { Fruit::banana }; // banana is not directly accessible; have to use Fruit
+
+    if (color == fruit) // compile error.
+    {
+        ...
+    }
+
+    return 0;
+}
+```
+
+> *Note*<br>
+> The `class` keyword (along with the `static` keyword) is one of the most overloaded
+> keywords in the C++ language, and can have different meanings depending on context.
+> Although scoped enumerations use the `class` keyword, they aren't considered to be a
+> "class type" (which is reserved for structs, classes, and unions).
+
+### Scoped enumerations define their own scope regions
+Scoped enumerations act like a namespace for their enumerators.
+
+### Scoped enumerations don't implicitly convert to integers
+But can explicitly convert using a `static_cast<int>(...)`.
+
+Conversely can `static_cast` an integer to a scoped enumerator.
+
+> **Best practice**<br>
+> Favor scoped enumerations unless there's a reason not to.
+
+But unscoped enumerations are still commonly used in C++ because there are situations
+where we desire the implicit conversion to int and we don't need extra namespacing.
+
+### Easing the conversion of scoped enumerators to integers
+There is a useful hack that overloads the unary `operator+` to perform this conversion
+
+```c++
+#include <iostream>
+
+enum class Animals
+{
+    chicken,
+    dog,
+    cat,
+    elephant,
+    duck,
+    snake,
+
+    maxAnimals,
+};
+
+constexpr auto operator+(Animals a) noexcept
+{
+    return static_cast<std::underlying_type_t<Animals>>(a);
+}
+
+int main()
+{
+    std::cout << +Animals::elephant << '\n';
+
+    return 0;
+}
+```
+
+### `using enum` statements (C++20)
+
+```c++
+enum class Color
+{
+    black,
+    red,
+    blue
+};
+
+constexpr std::string_view getColor(Color color)
+{
+    using enum Color;
+
+    switch (color)
+    {
+    case black: return "black";
+    case red: return "red";
+    case blue: return "blue";
+    default: return "???";
+    }
+}
+
+...
+```
