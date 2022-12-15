@@ -217,3 +217,55 @@ int main()
 ```
 
 See `fractions.cpp` - Quiz Q2
+
+
+
+# 10.9 - Member selection with pointers and references
+
+### Member selection for pointers to structs
+
+`.` won't work.
+
+Because pointers hold addresses, we first need to dereference the pointer to get the
+object before we can do anything with it.
+
+```c++
+Employee joe { 1, 34, 65000.0 };
+Employee* ptr { &joe };
+(*ptr).id;
+```
+
+**Member selection from pointer operator** or **arrow operator**.
+
+```c++
+Employee joe { 1, 34, 65000.0 };
+Employee* ptr { &joe };
+ptr->id;
+```
+
+> **Best practice**<br>
+> Use `->` instead of `.`.
+
+### Mixing pointers and non-pointers to members
+
+```c++
+struct Paw
+{
+    int claws { };
+};
+
+struct Animal
+{
+    std::string name { };
+    Paw paw { };
+};
+
+...
+
+Animal puma { "Puma, { 5 } };
+Animal* ptr { &puma };
+
+(ptr->paw).claws;
+```
+
+Parentheses aren't necessary but help readability.
