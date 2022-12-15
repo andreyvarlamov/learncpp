@@ -1,6 +1,6 @@
 # 11 - Array, Strings, and Dynamic Allocation
 
-11.1 11.5
+11.1 - 11.5
 
 # 11.1 -  Arrays (Part 1)
 
@@ -143,7 +143,7 @@ int main()
 `std::vector`). Returns an unsigned value. If you need a signed value, can either cast the
 result or, since C++, use std::ssize() (stands for signed size).
 
-`std::size()` was added in C++17. On older compilers, can `sizeof` instead.
+`std::size()` was added in C++17. On older compilers, can use `sizeof` instead.
 
 ```c++
 sizeof(array) / sizeof(array[0])
@@ -159,3 +159,26 @@ array that was passed to a function.
 C++ does not do any checking to make sure that indices are valid for the length of your
 array. Undefined behavior: could overwrite the value of another variable, or cause the
 program to crash. C++ will also let you use a negative index.
+
+
+
+# 11.3 - Arrays and loops
+
+```c++
+constexpr int scores[] { 84, 92, 81, 56 };
+constexpr int numStudents { static_cast<int>(std::size(scores)) };
+
+int maxScore { 0 };
+
+for (int student { 0 }; student < numStudents; ++student)
+{
+    if (scores[student] > maxScore)
+    {
+        maxScores = scores[student];
+    }
+}
+```
+
+### Mixing loop and arrays
+
+### Arrays and off-by-one errors
