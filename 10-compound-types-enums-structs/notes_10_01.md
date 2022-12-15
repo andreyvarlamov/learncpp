@@ -115,3 +115,178 @@ Or just use scoped enumerations.
 ### Comparing against enumerators
 
 if-else and ==
+
+
+
+# 10.3 - Unscoped enumeration input and output
+
+Enumerators are integral symbolic constants. Similar to the case with chars.
+
+Each enumerator is automatically assigned an integer value based on its position in the
+enumerator list.
+
+Possible to explicitly define the value of enumerators.
+
+```c++
+enum Animal
+{
+    cat = -3,
+    dog,            // assigned -2
+    pig,            // assigned -1
+    horse = 5,
+    giraffe = 5,    // shares the same value as horse
+    chicken,        // assigned 6
+}
+```
+
+Horse and giraffe become interchangeable. Should generally be avoided
+
+### Unscoped enumerations will implicitly convert to integral values
+When an enumerated type is used in a function call or with an operator, the compiler will
+first try to find a function or operator that matches the enumerated type. If it can't
+find a match, the compiler will then implicitly convert an unscoped enumeration or
+enumerator to its corresponding integer value.
+
+### Printing enumerator names
+As of C++20, no easy way to do this. Manual solution. E.g.
+
+```c++
+enum Color
+{
+    black,
+    red,
+    blue,
+};
+
+constexpr std::string_view getColor(Color color)
+{
+    switch (color)
+    {
+    case black: return "black";
+    case red:   return "red";
+    case blue:  return "blue";
+    default:    return "???";
+    }
+}
+```
+
+`std::string_view` is much less expensive to copy than `std::string`.
+
+### Teaching `operator<<` how to print enumerator
+
+Using operator overloading
+
+```c++
+#include <iostream>
+
+enum Color
+{
+    black,
+    red,
+    blue,
+};
+
+std::ostream& operator<<(std::ostream& out, Color color)
+{
+    switch (color)
+    {
+    case black: out << "black"; break;
+    case red:   out << "red";   break;
+    case blue:  out << "blue";  break;
+    default:    out << "???";   break;
+    }
+
+    return out;
+}
+
+int main()
+{
+    Color shirt { blue };
+    std::cout << "Your shirt is " << shirt;
+
+    return 0;
+}
+```
+
+Here's what actually hapens. When we try to print `shirt` using `std::cout` and `operator<<`,
+the compiler will see that we've overloaded `operator<<` to work with objects of type `Color`.
+This overloaded `operator<<` function is then called with `std::cout` as the `out` parameter,
+and our shirt as parameter color. Since `out` is a reference to `std::cout`, a statement such
+as `out << "blue"` is really just print `"blue"` to `std::cout`.
+
+### Enumeration size and base
+Integer family of types. C++ standard says the enum size needs to be large enough to
+represent all of the enumerator values. Most often, it will make enum variables the same
+size as a standard `int`.
+
+It is possible to specify a different underlying type.
+
+```c++
+enum Color : std::uint8_t
+{
+    black,
+    red,
+    blue,
+};
+```
+
+Since enumerators aren't usually used for arithmetic or comparisons with integers, it's
+generally safe to use an unsigned integer if desired.
+
+> **Best practice**<br>
+> Specify the base type of an enumeration only when necessary.
+
+> **Warning**<br>
+> Because `std::int8_t` and `std::uint8_t` are usually type aliases for char types, using
+> either of these types as the enum base will most likely cause the enumerators to print
+> as char values rather than int values.
+
+### Integer to unscoped enumerator conversion
+Compiler will not implicitly convert an integer to an unscoped enumerator.
+
+Use `static_cast<EnumName>(2)`.
+
+In C++17, if an unscoped enumeration has a specifed base, then the compiler will allow you
+to initialize (but not assign) an unscoped enumeration using an integral value.
+
+I.e. `enum Pet : int`
+
+### Unscoped enumerator input
+
+```c++
+#include <iostream>
+
+enum Pet
+{
+    cat,
+    dog,
+    pig,
+    whale,
+};
+
+int main()
+{
+    std::cout << "Enter a pet (0=cat, 1=dog, 2=pig, 3=whale): ";
+
+    int input { };
+    std::cin >> input;
+
+    Pet pet { static_cast<Pet>(input) };
+
+    return 0;
+}
+```
+
+Can also overload `operator>>`.
+
+```c++
+std::istream& operator>>(std::istream& in, Pet &pet)
+{
+    int input { };
+    in >> input;
+
+    pet = static_cast<Pet>(input);
+
+    return in;
+}
+```
