@@ -182,3 +182,73 @@ for (int student { 0 }; student < numStudents; ++student)
 ### Mixing loop and arrays
 
 ### Arrays and off-by-one errors
+
+
+
+# 11.4 - Sorting an array using selection sort
+
+### A case for sorting
+
+### How sorting works
+Typically comparing pairs of elements and swapping. Can use `std::swap()` from <utility>.
+
+### Selection sort
+One of the slower sorts, but easy to understand.
+
+Steps:
+1. Start at array index 0, search the entire array to find the smallest value
+2. Swap the smallest value found in the array with the value at index 0
+3. Repeat steps 1 & 2 starting from the next indeces
+
+### Selection sort in C++
+
+```c++
+#include <iostream>
+#include <iterator>
+#include <utility>
+
+int main()
+{
+    int array[] { 30, 50, 20, 10, 40 };
+    constexpr int length { static_cast<int>(std::size(array)) };
+
+    for (int startIndex { 0 }; startIndex < length - 1; ++startIndex)
+    {
+        int smallestIndex { startIndex };
+
+        for (int currentIndex { startIndex +1 }; currentIndex < length; ++currentIndex)
+        {
+            if (array[currentIndex] < array[smallestIndex])
+            {
+                smallestIndex = currentIndex;
+            }
+        }
+
+        std::swap(array[startIndex], array[smallestIndex]);
+    }
+
+    for (int index { 0 }; index < length; ++index)
+    {
+        std::cout << array[index] << ' ';
+    }
+
+    std::cout << '\n';
+
+    return 0;
+}
+```
+
+Sorting names works using the same algorithm. Just change the array type from int to
+std::string and initialize with appropriate values.
+
+### std::sort
+<algorithm> header.
+
+By default, std::sort sorts in aschending order using operator< to compare pairs of
+elements and swapping them if necessary.
+
+```c++
+std::sort(std::begin(array), std::end(array));
+```
+
+See `bubble_sort.cpp` for Quiz Questions 3 and 4
