@@ -252,3 +252,51 @@ std::sort(std::begin(array), std::end(array));
 ```
 
 See `bubble_sort.cpp` for Quiz Questions 3 and 4
+
+
+
+# 11.5 - Multidimensional arrays
+
+```c++
+int array[3][5] // a 3 element array of 5 element arrays
+```
+
+In a two-dimensional array, it is convenient to think of the left subscript as being the
+row and the right being the column. **Row-major** order.
+
+### Initializing two-dimensional arrays
+
+```c++
+int array[3][5]
+{
+    { 1, 2, 3, 4, 5 },
+    { 6, 7, 8, 9, 10 },
+    { 11, 12, 13, 14, 15 }
+};
+```
+
+Some compilers let you omit the inner braces.
+
+Two-dimensional arrays with initializer lists can omit (only) the left length
+specification.
+
+```c++
+int array[][5]
+{
+    ...
+};
+```
+
+Can be initialized as all 0s:
+
+```c++
+int array[3][5] { };
+```
+
+### Accessing elements in a two-dimensional array
+Nested for loops. Outer for row, inner for column.
+
+### Multidimensional arrays larger than 2 dimensions
+
+### A two-dimensional array example
+See `multiplication_table.cpp`
