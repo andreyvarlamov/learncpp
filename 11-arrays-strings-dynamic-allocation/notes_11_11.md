@@ -159,3 +159,77 @@ ptr = &value;
 int* ptr { new int{} };
 ptr = new int{};
 ```
+
+
+
+# 11.12 - Dynamically allocating arrays
+
+```c++
+#include <iostream>
+
+int main()
+{
+    std::cout << "Enter a positive integer: ";
+    int length { };
+    std::cin >> length;
+
+    int* array { new int[length] { } }; // array new
+
+    std::cout << "I just allocated an array of integers of length " << length << '\n';
+
+    array[0] = 5;
+
+    delete[] array; // array delete
+
+    // Don't need to set array to nullptr/0 here because it's going out of scope
+    // immediately after this anyeway
+
+    return 0;
+}
+```
+
+The length of dynamically allocated arrays has to be a type that's convertible to
+`std::size_t`. In practice, using an `int` length is fine, since `int` will convert to
+`std::size_t`.
+
+Some might argue that it's best to use lengths of type `size_t`, or explicitly convert
+through a `static_cast`.
+
+No literal to represent `size_t`. So unlikely C++ designers intended us to strictly use
+`size_t` types.
+
+Some pedantic compiler might flag this as a signed/unsigned conversion error. However the
+GCC does not (even with -Wsign-conversion).
+
+Because this memory is allocated not on the stack (where fixed arrays are), we can make
+the size very large.
+
+### Dynamically deleting arrays
+Have to use the array version. One of the most common mistakes new programmers make -
+using the non-array version. Undefined behavior - data corruption, memory leaks, crashes,
+etc.
+
+How does array delete know how much memory to delete? Array `new[]` keeps track of how
+much memory was allocated. Unfortunately, this size/length is not accessible to the
+programmer.
+
+### Dynamic arrays are almost identical to fixed arrays
+But now the programmer is responsible for deallocating.
+
+### Initializing dynamically allocated arrays
+Zero-initialize: `int* array { new int[length]{} }`
+
+Non-zero-initialize: pre C++11 - no easy way. Had to loop. Starting with C++11,
+initializer lists:
+
+```c++
+int* array { new int[5] { 9, 7, 5, 3, 1 } };
+```
+
+### Resizing arrays
+Can set the array length at the time of allocation, but no built-in way to resize an array
+that has already been allocated. Workaround: allocate a new array, copy the elements,
+delete the old array. Error prone, especially when the element type is a class (which have
+special rules governing how they are created).
+
+Recommended to avoid doing this yourself. Use `std::vector`.
