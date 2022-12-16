@@ -300,3 +300,35 @@ for (int i { 0 }; auto score : score)
     ++i;
 }
 ```
+
+### 11.14 - Void pointers
+Special type of pointer that can point at objects of any data type.
+
+```c++
+void* ptr;
+```
+
+But dereferencing a void pointer is illegal. Have to cast the pointer to another pointer
+type and then dereference.
+
+```c++
+*static_cast<int*>(ptr)
+```
+
+### Miscellany
+Can be set to a null value:
+
+```c++
+void* ptr{ nullptr };
+```
+
+Although some compilers allow deleting a void pointer that points to dynamically allocated
+memory, doing so should be avoided, as it can result in undefined behavior.
+
+Not possible to do pointer arithmetic on a null pointer, because it needs to know the size
+of the object it is pointing to.
+
+### Conclusion
+Very occasionally useful, but in generatl should be avoided. Because they effectively
+allow you to avoid type checking. Can do things that don't make sense, and the compiler
+won't complain about it.
