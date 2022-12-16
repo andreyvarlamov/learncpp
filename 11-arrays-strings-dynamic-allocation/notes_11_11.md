@@ -332,3 +332,121 @@ of the object it is pointing to.
 Very occasionally useful, but in generatl should be avoided. Because they effectively
 allow you to avoid type checking. Can do things that don't make sense, and the compiler
 won't complain about it.
+
+
+
+# 11.15 - Pointers to pointers and dynamic multidimensional arrays
+
+### Pointers to pointers
+
+```c++
+int value { 5 };
+
+int* ptr { &value };
+*ptr; // dereference pointer and get underlying int
+
+int** ptrptr { &ptr };
+**ptrptr // dereference pointer to pointer and get underlying pointer to int
+```
+
+Cannot do this:
+
+```c++
+int value { 5 };
+int** ptrptr { &&value };
+```
+
+Because the address-of operator requires an lvalue, but &value is an rvalue.
+
+Can be set to null
+
+```c++
+int ** ptr { nullptr };
+```
+
+### Arrays of pointers
+The most common use for pointers to pointers: allocate an array of pointers.
+
+```c++
+int** array { new int*[10] }; // allocate an array of 10 int pointers
+```
+
+### Two-dimensional dynamically allocated arrays
+Easy for fixed arrays:
+
+```c++
+int array[10][5];
+```
+
+Won't work:
+
+```c++
+int** array { new int[10][5] };
+```
+
+If the right most array dimension (*column count in each row*) is contexpr (*known at
+compile time*):
+
+```c++
+int x { 7 }; // non-constant
+int (*array)[5] { new int [x][5] }; // array of 5 (constexpr) pointers to int. Called "array".
+```
+
+If both dimensions are not known at compile time. Have to loop:
+
+```c++
+int** array { new int*[10] }; // An array of 10 int pointers - pointers to row arrays.
+
+for (int i { 0 }; i < 10; ++i)
+{
+    array[i] = new int[5]; // Allocate memory for 5 ints and point each row pointer to
+                           // that block of 5 ints in memory
+```
+
+Can access array as usual:
+
+```c++
+array[9][4] = 3;
+
+// Same as
+(array[9])[4] = 3;
+
+// Same as
+*(*(array + 9) + 4) = 3;
+```
+
+Deleting has to be in a loop too:
+
+```c++
+for (int i { 0 }; i < 10; ++i)
+{
+    delete[] array[i];
+}
+delete[] array; // delete the array of pointers to "rows" too
+```
+
+Easier to just flatten into a one-dimensional array of size x\*y.
+
+Then each index is:
+
+```c++
+(row * colCount) + col;
+```
+
+### Passing a pointer by address
+We can pass a pointer-to-a-pointer to a function and use that pointer to change the value
+of the pointer it points to.
+
+Or can pass the pointer by reference as in 9.10.
+
+### Pointer to a pointer...
+
+```c++
+int*** ptrx3;
+```
+
+And more...
+
+Very rare.
+
+Recommended to avoid pointers to pointers unless no other options are available.
