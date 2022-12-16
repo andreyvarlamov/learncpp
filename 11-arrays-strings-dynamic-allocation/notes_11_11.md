@@ -2,6 +2,8 @@
 
 11.11 - 11.15
 
+# 11.11 - Dynamic memory allocation with new and delete
+
 ### The need for dynamic memory allocation
 C++ supports three basic types of memory allocation:
 
