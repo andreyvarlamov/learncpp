@@ -235,3 +235,68 @@ special rules governing how they are created).
 Recommended to avoid doing this yourself. Use `std::vector`.
 
 See `sort_names.cpp` for Quiz Question 1
+
+# 11.13 - For-each loops
+
+**Range-based for-loop**.
+
+```c++
+constexpr int fibonacci[] { ... };
+for (int num : fibonacci)
+{
+    std::cout << number << '\n';
+}
+```
+
+### For each loops and the auto keyword
+Ideal case in which to use `auto`.
+
+```c++
+for (auto number : fibonacci)...
+```
+
+### For-each loops and references
+
+```c++
+for (auto element : array) // element will be a copy of the current array element
+...
+```
+
+Can be expensive. Most of the time we really just want to refer to the original element.
+
+```c++
+for (auto& element : array) // makes the element a reference to the actual array element
+// preventing a copy from being made
+...
+```
+
+Also good to make it a const:
+
+```c++
+for (const auto& element : array)
+...
+```
+
+-
+
+An array that decayed to a pointer cannot be used in a for-each loop. It needs to know how
+big the array is. For the same reason, for-each won't work for dynamic arrays either.
+
+### For-each loops and non-arrays
+Works for `std::vector`, linked lists, trees maps, etc.
+
+### Can I get the index of the current element?
+No direct way. (Because many structures that for-each loops can be used with (such as
+linked lists) are not directly indexable).
+
+Since C++20, possible to add an init statement. So you can create an index variable
+without polluting the function scope.
+
+```c++
+for (int i { 0 }; auto score : score)
+{
+    ...
+
+    ++i;
+}
+```
