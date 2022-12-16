@@ -233,3 +233,5 @@ delete the old array. Error prone, especially when the element type is a class (
 special rules governing how they are created).
 
 Recommended to avoid doing this yourself. Use `std::vector`.
+
+See `sort_names.cpp` for Quiz Question 1
