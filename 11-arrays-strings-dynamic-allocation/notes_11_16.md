@@ -264,3 +264,91 @@ std::vector<bool> vector { true, false, false, true, true, false, false, true };
 ```
 
 Recommended to use in most cases where dynamic arrays are needed.
+
+
+
+# 11.18 - Introduction to iterators
+
+Ranged-based for-loops use iterators.
+
+### Iterators
+An object designed to treverse through a container (e.g. the values in an array, or the
+characters in a string), providing access to each element along the way.
+
+A container may provide different kinds of iterators. E.g., an array container might offer
+a forward iterator that walks through the array in forward order, and a reverse one that
+walks through the array in reverse order.
+
+Once the appropriate type of iterator is created, the programmer can then use the
+interface provided by the iterator to traverse and access elements without having to worry
+about what kind of traversal is being done or how the data is being stored in the
+container.
+
+C++ iterators typically use the same interface for traversal (`operator++` to move to the
+next element) and access (`operator*` to access the current element).
+
+### Pointers as an iterator
+The simplest kind of iterator. Using pointer arithmetic.
+
+```c++
+#include <array>
+#include <iostream>
+
+int main()
+{
+    std::array data { 0, 1, 2, 3, 4, 5, 6 };
+
+    auto begin { &data[0] };
+    auto end { begin + std::size(data) }; // this points to one spot beyond the last element
+
+    for (auto ptr { begin }; ptr != end; ++ptr) // ++ to move to the next element
+    {
+        std::cout << *ptr << ' '; // * to get value of current element
+    }
+
+    std::cout << '\n';
+
+    return 0;
+}
+```
+
+### Standard library iterators
+`std::array` provides `begin()` and `end()`.
+
+```c++
+auto begin { array.begin() };
+auto end { array.end() };
+```
+
+`<iterator>` header - two generic functions `std::begin` and `std::end`.
+
+```c++
+auto begin { std::begin(array) };
+auto end { std::end(array) };
+```
+
+### Back to range-based for loops
+All types that have both `begin()` and `end()` member functions, or that can be used with
+`std::begin()` and `std::end()`, are usable in range-based for-loops.
+
+Behind the scenes for-each calls `begin()` and `end()` of the type to iterate over.
+`std::array` has `begin` and `end` member functions. C-style fixed arrays can be used with
+`std::begin` and `std::end` functions. Dynamic arrays don't work though, because there is
+no `std::end` function for them (because the type information doesn't contain the array's
+length).
+
+Possible to add those functions to your own types, so that they can be used with
+range-based for-loops too.
+
+Iterators are also used in `std::sort` and other algorithms.
+
+### Iterator invalidation (dangling iterators)
+Iterators can be left dangling if the elements being iterated over change address or are
+destroyed. When this happens, we say the iterator has been **invalidated**. Accessing an
+invalidated iterator produces undefined behavior.
+
+**Warning**<br>
+Some operations that modify containers (such as adding an element to a `std::vector`!) can
+have the side effect of causing the elements in the container to change addresses. When
+this happens, existing iterators to those elements will be invalidated. Good C++ reference
+documentation should note which container operations may or will invalidate iterators.
