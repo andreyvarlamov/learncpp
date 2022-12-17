@@ -547,3 +547,42 @@ C++20 addes *ranges*, which allows us to simply pass `arr`, instead of `arr.begi
 > **Best practice**<br>
 > Favor using functions from the algorithms library over writing you own functionality to
 > do the same thing.
+
+
+
+# Additional algorithms (from the quiz 11.x)
+
+### `std::reduce`
+
+Applies a function, by default the `+` operator, to all elements in a list, resulting in a
+single value.
+
+There's also `std::accumulate`, but it cannot be parallelized, because it applies the
+function left-to-right.
+
+`std::reduce` segments the list, which means that the funciton is applied in an unknown
+order, allowing the operation to be parallelized. If we want to sum up a list, we don't
+care about the order and we use `std::reduce`.
+
+`std::reduce` is currently not fully implemented in all major standard libraries. If it
+doesn't work for you, fall back to `std::accumulate`.
+
+```c++
+int sum = std::reduce(arr.begin(), arr.end());
+```
+
+```c++
+// The 0 is the initial value of the result
+int sum = std::accumulate(arr.begin(), arr.end(), 0);
+```
+
+### `std::shuffle`
+
+Randomly re-orders its elements. Needs a rng.
+
+E.g.
+
+```c++
+std::mt19937 mt { static_cast<std::mt19937::result_type>(std::time(nullptr)) };
+std::shuffle(arr.begin(), arr.end(), mt);
+```
