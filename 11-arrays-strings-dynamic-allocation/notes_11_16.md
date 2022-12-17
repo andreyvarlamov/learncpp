@@ -347,8 +347,203 @@ Iterators can be left dangling if the elements being iterated over change addres
 destroyed. When this happens, we say the iterator has been **invalidated**. Accessing an
 invalidated iterator produces undefined behavior.
 
-**Warning**<br>
-Some operations that modify containers (such as adding an element to a `std::vector`!) can
-have the side effect of causing the elements in the container to change addresses. When
-this happens, existing iterators to those elements will be invalidated. Good C++ reference
-documentation should note which container operations may or will invalidate iterators.
+> **Warning**<br>
+> Some operations that modify containers (such as adding an element to a `std::vector`!) can
+> have the side effect of causing the elements in the container to change addresses. When
+> this happens, existing iterators to those elements will be invalidated. Good C++ reference
+> documentation should note which container operations may or will invalidate iterators.
+
+
+
+# 11.19 - Introduction to standard library algorithms
+
+Because searching, counting and sorting are such common operations to do, the C++ standard
+library comes with a bunch of functions to do these things in just a few lines of code.
+Additionally, these standard library functions come pre-tested, are efficient, work on a
+variety of different container types, and many support parallelization.
+
+The functionality provided in the algorithms library generally fall into one of three
+categories:
+
+* **Inspectors** -- used to view (but not modify) data in a container. E.g. searching and
+  counting.
+* **Mutators** -- used to modify data in a container. E.g. sorting and shuffling.
+* **Facilitators** -- used to generate a result based on values of the data members. E.g.
+  objects that multiple values, or objects that determine what order pais of elements
+  should be sorted in.
+
+[Reference](https://en.cppreference.com/w/cpp/algorithm)
+
+All of these make use of iterators.
+
+### Using `std::find` to find an element by value
+
+```c++
+std::array arr { 13, 90, 99, 5, 40, 80 };
+
+auto found { std::find(arr.begin(), arr.end(), 99) };
+
+// Algorithms that don't find what they were looking for return the end iterator.
+if (found == arr.end())
+{
+    // Not found
+}
+else
+{
+    *found = 199
+}
+```
+
+### Using `std::find_if` to find an element that matches some condition
+
+```c++
+#include <algorithm>
+#include <array>
+#include <string_view>
+
+bool containsNut(std::string_view str)
+{
+    // std::string_view::find returns std::string_view::npos if it doesn't find the
+    // substring. Othrewise it returns the index where the substring occurs in str.
+    return (str.find("nut") != std::string_view::npos);
+}
+
+int main()
+{
+    std::array<std::string_view, 4> arr { "apple", "banana", "walnut", "lemon" };
+
+    auto found { std::find_if(arr.begin(), arr.end(), containsNut) };
+
+    if (found == arr.end())
+    {
+        // Not found
+    }
+    else
+    {
+        // Found
+    }
+
+    return 0;
+}
+```
+
+### Using `std::count` and `std::count_if` to count how many occurences there are
+E.g. in the previous program replace `find_if` statement with:
+
+```c++
+auto nuts { std::count_if(arr.begin(), arr.end(), containsNut) };
+```
+
+Or replace `find` with `count`.
+
+### Using `std::sort` to custom sort
+Passing, as a third argument, a function that takes two parameters to compare, and returns true if the first
+argument should be ordered before the second.
+
+E.g. to sort an array in reverse order can do:
+
+```c++
+bool greater(int a, int b)
+{
+    return (a > b);
+}
+
+...
+std::sort(arr.begin(), arr.end(), greater);
+```
+
+This is passing a function pointer. `std::sort` will use the pointer and call the actual
+function with any 2 elements of the array.
+
+C++ provides a custom type (named `std::greater`) for sorting in descending order. From
+the `<functional>` header.
+
+```c++
+std::sort(arr.begin(), arr.end(), std::greater { } );
+```
+
+Note that `std::greater { }` needs the curly braces because it is not a callable function.
+It's a type, and in order to use it, we need to instantiate an object of that type. The
+curly braces instantiate an anonymous object of that typ (which then gets passed as an
+argument to `std::sort`.
+
+To understand how sort with custom sort function works:
+
+```c++
+#include <functional> // std::function
+#include <iterator>
+#include <utility>
+
+void sort (int* begin, int* end, std::function<bool(int, int)> compare)
+{
+    for (auto startElement { begin }; startElement != end - 1; ++startElement)
+    {
+        auto smallestElement { startElement };
+
+        for (auto currentElement { std::next(startElement) }; currentElement != end; ++currentElement)
+        {
+            if (compare(*currentElement, *smallestElement))
+            {
+                smallestElement = currentElement;
+            }
+        }
+
+        std::swap(*startElement, *smallestElement);
+    }
+}
+
+int main()
+{
+    int array[] { 2, 1, 9, 4, 5 };
+
+    // use std::greater to sort in descending order
+    // (We have to use the global namespace selector to prevent a collision
+    // between our sort function and std::sort.)
+    ::sort(std::begin(array), std::end(array), std::greater { });
+
+    for (auto i : array)
+    {
+        // print sorted array elements
+    }
+
+    return 0;
+}
+```
+
+### Using `std::for_each` to do something to all elements of a container
+
+```c++
+void doubleNumber(int& i)
+{
+    i *= 2;
+}
+
+...
+
+std::for_each(arr.begin(), arr.end(), doubleNumber);
+```
+
+Can also skip elements at teh beginning or end of a container, e.g.:
+
+```c++
+std::for_each(std::next(arr.begin()), arr.end(), doubleNumber);
+```
+
+Like many algorithms, `std::for_each` can be parallelized to achieve faster processing,
+making it better suited for large projects and big data than a range-based for-loop.
+
+### Order of execution
+
+> **Best practice**<br>
+> Unless otherwise specified, do not assume that standard library algorithms will execute
+> in a particular seqyence. `std::for_each`, `std::copy`, `sdt::copy_backward`,
+> `std::move`, and `std::move_backward` have sequential guarantees.
+
+### Ranges in C++20
+C++20 addes *ranges*, which allows us to simply pass `arr`, instead of `arr.begin()` and
+`arr.end()`.
+
+### Conclusion
+> **Best practice**<br>
+> Favor using functions from the algorithms library over writing you own functionality to
+> do the same thing.
