@@ -242,7 +242,7 @@ Sorting names works using the same algorithm. Just change the array type from in
 std::string and initialize with appropriate values.
 
 ### std::sort
-/<algorithm/> header.
+\<algorithm\> header.
 
 By default, std::sort sorts in aschending order using operator< to compare pairs of
 elements and swapping them if necessary.
