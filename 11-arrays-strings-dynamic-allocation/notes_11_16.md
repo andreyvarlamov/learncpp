@@ -192,3 +192,75 @@ std::array<House, 3> houses { // initializer for houses
 ```
 
 Recommended to use `std::array` over built-in fixed arrays for any non-trivial array use.
+
+
+
+# 11.17 - An introduction to std::vector
+
+Dynamic arrays faster and easier. Comes with additional tricks. One of the most useful and
+versatile tools in C++.
+
+Introduced in C++03.
+
+Handles its own memory management.
+
+```c++
+#include <vector>
+
+std::vector<int> array;
+std::vector<int> array2 = { 9, 7, 5, 3, 1 }; // use initializer list to initialize array (before C++11)
+std::vector<int> array2 = { 9, 7, 5, 3, 1 }; // use uniform initialization to initialize array
+
+// the type can be omitted since C++17
+std::vector array4 { 9, 7, 5, 3, 1 }; // deduced to std::vector<int>
+```
+
+Accessing can be done via `[]`, which does no bounds checking. Or `at()` which does bounds
+checking. If you request an element that is off the end of the array, the vector will not
+automatically resize.
+
+As of C++11, can also *assign* values to a `std::vector` using an initializer-list. Then
+the vector will self-resize to match the number of elements provided.
+
+### Self-cleanup prevents memory leaks
+When a vector variable goes out of scope, it automatically deallocates the memory it
+controls.
+
+### Vectors remember their length
+Unlike built-in dynamic arrays, which don't know the length of the array they are pointing
+to, std::vector keeps track of its length.
+
+`size()` function. Just like with `std::array` returns `size_type`, which is an alias of
+`size_t`.
+
+### Resizing a vector
+`std::vector::resize`. Existing element values were preserved. May be resize to smaller.
+
+```c++
+std::vector vector { 0, 1, 2, 3, 4 };
+vector.resize(10);
+```
+
+### Initializing a vector to a specific size
+Resizing a vector is computationally expensive, so you should strive to minimize the
+number of times you do so. If you need a vector with a specific number of elements but
+don't know the values of the elements at the point of declaration, you can create a vector
+with default elements using direct initialization.
+
+```c++
+std::vector a { 1, 2, 3 }; // allocate 3 elements with values 1, 2, and 3; type deduced
+std::vector b { 3 }; // allocate 1 element with value 3; type deduced
+std::vector<int> c ( 3 ); // allocate 3 elements with values 0, 0, 0
+```
+
+16.7 will cover how this works.
+
+### Compacting bools
+Special implementation for `std::vector` of type bool that will compact 8 booleans into a
+byte. Happens behind the scenes, and doesn't change how you use the std::vector.
+
+```c++
+std::vector<bool> vector { true, false, false, true, true, false, false, true };
+```
+
+Recommended to use in most cases where dynamic arrays are needed.
