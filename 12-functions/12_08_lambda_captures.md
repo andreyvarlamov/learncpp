@@ -273,3 +273,33 @@ int main()
     return 0;
 }
 ```
+
+---
+
+### Binary search (from 12.x Q3)
+The best algorithm for determining whether a value exists in a sorted array. Because we
+can throw out half of the array with each iteration, this algorithm is very fast. Even
+with an array of a million elements, it only takes at most 20 iterations to determine
+whether a value exists in the array or not. Only works on sorted arrays.
+
+Algorithm:
+
+1. Look at the center alement of the array (if even count, round down).
+2. If the center element is greater than the target element, discard the top half of the
+   array (or recurse on the bottom half).
+3. If the center element is less than the target element, discard the bottom half ot the
+   array (or recurse on the top half).
+4. If the cetner element equals the target element, return the index of the center
+   element.
+5. I fyou discard the entire array without finding the target element, return a sentinel
+   that represents "not found" (in this case, we'll use -1, since it's an invalid array
+   index).
+
+Modifying an array is expensive, so typically we do not modify it, instead, we use two
+integers (min and max) to hold the indices of the minimum and maximum elements of the
+array that we're interested in examining.
+
+See `08_binary_search.cpp` for both iterative and recursive implementations
+
+`std::binary_search` returns true if a value exists in a sorted list.
+`std::equal_range` returns the iterators to the first and last element with a given value.
