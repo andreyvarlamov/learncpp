@@ -67,7 +67,7 @@ int main()
     something.getValue() = "Hi"; // calls non-const getValue();
 
     const Something something2;
-    something2.getValue() = "Hi"; // calls const getValue();
+    something2.getValue(); // calls const getValue();
 
     return 0;
 }
