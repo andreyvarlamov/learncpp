@@ -31,10 +31,10 @@ public:
 int main()
 {
     Base base { 5 };
-    base.identify();
+    base.identify(); // I am a Base
 
     Derived derived { 7 };
-    derived.identify();
+    derived.identify(); // I am a Base
 
     return 0;
 }
