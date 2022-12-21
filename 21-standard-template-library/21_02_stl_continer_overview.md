@@ -14,6 +14,9 @@ std::list, std::forward\_list, and std::basic\_string.
   value in the middle, you have to start at one end and "walk the list" until you reach the
   element you want to find. The advantage: inserting is very fast if you already know where
   you want to insert them. Generally iterators are used to walk through the list.
+* Although the STL string (and wstring) class aren't generally included as a type of
+  sequence container, they essentially are, as the can be though of as a vetor with data
+  elements of type char (or wchar).
 
 ### Associative Containers
 
