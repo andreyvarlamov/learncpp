@@ -78,3 +78,6 @@ int main()
     storage.print(); // Prints our name
 }
 ```
+
+T could be T* in the specialized constructor to cover all pointer types, and not just char
+pointer (fro 19.6)
