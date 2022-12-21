@@ -39,3 +39,10 @@ One function that takes ref to Base, when there are multiple derived classes.
 Arrays of Base type, that can hold all derived classes.
 
 Enter virtual functions...
+
+----
+
+Possible to add a member to the base class that will be initialized differently in
+different derived classes. But it's non-optimal, because the base class will become large
+memory-wise and complicated. Also, only works if the base class member can be determined
+at initialization time.
