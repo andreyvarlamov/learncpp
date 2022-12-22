@@ -15,3 +15,5 @@ through each character of the string and ensure it meets the validation criteria
 `std::ranges::all_of`
 
 ### Numeric validation
+
+### Numeric validation as a string
