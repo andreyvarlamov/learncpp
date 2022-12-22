@@ -1,0 +1,3 @@
+# 22.2 - std::string construction and destruction
+
+...
