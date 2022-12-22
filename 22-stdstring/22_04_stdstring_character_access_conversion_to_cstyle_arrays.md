@@ -26,3 +26,5 @@ No null is appended. Up to caller to ensure szBUF is initialized to NULL or term
 string using the returned length.
 
 The caller is responsible for not overflowing szBuf.
+
+This function should be avoided where possible as it is relatively dangerous.
